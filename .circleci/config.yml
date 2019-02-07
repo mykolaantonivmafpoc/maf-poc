@@ -30,6 +30,7 @@ jobs:
 
 
   compose:
+    steps:
       - run:
           name: Bring up all docker containers and test network reachability
           command: |
