@@ -22,22 +22,18 @@ jobs:
 
     steps:
       - run:
-          name: Run all tests
-          command: make test
-      - run:
-          name: Lint all code
-          command: make lint
-
-
-  compose:
-    steps:
-      - run:
           name: Bring up all docker containers and test network reachability
           command: |
             set -x
             docker-compose up -d
             docker run --network container:api appropriate/curl \
               --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080/
+      - run:
+          name: Run all tests
+          command: make test
+      - run:
+          name: Lint all code
+          command: make lint
 
 
 # Default workflow filter to trigger on PR
