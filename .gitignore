@@ -1,0 +1,10 @@
+*.py[cod]
+__pycache__
+.pytest_cache/
+
+tags
+*~
+*.sw[op]
+.vscode
+.idea
+
