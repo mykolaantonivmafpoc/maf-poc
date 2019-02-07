@@ -50,7 +50,7 @@ filter_PR: &filter_PR
       only:
         - /^MAF-.*/
 # Default workflow filter to trigger on master branch
-filter_merge: &filter_merge
+filter_merge: &filter_master
   filters:
     branches:
       only:
