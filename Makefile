@@ -8,6 +8,9 @@ IMAGE_NAME = $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/maf-poc
 run:
 	docker-compose up --build
 
+.PHONY: test
+test: lint test-unit run test-integration
+
 .PHONY: docker-login
 docker-login:
 	eval $$(aws ecr get-login --registry-id $(REGISTRY_ID) --region $(REPOSITORY_REGION) --no-include-email)
@@ -23,10 +26,13 @@ install:
 	$(MAKE) -C backend install
 	$(MAKE) -C frontend install
 
-.PHONY: test
-test:
+.PHONY: test-unit
+test-unit:
 	$(MAKE) -C backend test
 	$(MAKE) -C frontend test
+
+.PHONY: test-integration
+test-integration:
 	$(MAKE) -C integration-tests
 
 .PHONY: lint

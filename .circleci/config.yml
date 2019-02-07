@@ -1,22 +1,43 @@
 version: 2
+
+# Save prerequisites cache using pattern from https://circleci.com/docs/2.0/caching/
+save_cache: &save_cache
+  key: cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-{{ checksum "frontend/yarn.lock" }}
+  paths:
+    - /root/.cache
+    - /home/circleci/.cache
+
+# Restore saved prerequisites cache using pattern from https://circleci.com/docs/2.0/caching/
+restore_cache: &restore_cache
+  keys:
+    # when lock file changes, use increasingly general patterns to restore cache
+    - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-{{ checksum "frontend/yarn.lock" }}
+    - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
+    - cache-v1-{{ .Branch }}-
+    - cache-v1-
+
 jobs:
   build:
     docker:
       - image: circleci/python:3.7.2-node-browsers
     steps:
       - checkout
+      - restore_cache:
+        <<: *restore_cache
       - run:
           name: Setup poetry
           command: sudo pip install poetry
       - run:
           name: Install dependencies
           command: make install
+      - save_cache:
+        <<: *save_cache
       - run:
           name: Lint all code
           command: make lint
       - run:
-          name: Run all tests
-          command: make test
+          name: Run unit tests
+          command: make test-unit
       - setup_remote_docker
       - run:
           name: Bring up all docker containers and test network reachability
@@ -26,6 +47,9 @@ jobs:
             docker run --network container:api appropriate/curl \
               -s --retry 10 --retry-delay 1 --retry-connrefused http://localhost:80/
             echo all is up
+      - run:
+          name: Run integration tests
+          command: make test-integration
 
   deploy:
     docker:
