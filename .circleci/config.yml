@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Setup poetry
-          command: pip install poetry
+          command: sudo pip install poetry
       - run:
           name: Install dependencies
           command: make install
