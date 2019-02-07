@@ -12,11 +12,16 @@ run:
 docker-login:
 	eval $$(aws ecr get-login --registry-id $(REGISTRY_ID) --region $(REPOSITORY_REGION) --no-include-email)
 
-.PHONY: build
-build:
-	docker build -t $(IMAGE_NAME)-api -f docker/Dockerfile.api .
-#	docker build -t $(IMAGE_NAME)-static -f docker/Dockerfile.static .
-#	docker build -t $(IMAGE_NAME)-db -f docker/Dockerfile.db .
+.PHONY: docker-build
+docker-build:
+	docker build -t $(IMAGE_NAME)-api:$(TAG) -f docker/Dockerfile.api .
+#	docker build -t $(IMAGE_NAME)-static:$(TAG) -f docker/Dockerfile.static .
+#	docker build -t $(IMAGE_NAME)-db:$(TAG) -f docker/Dockerfile.db .
+
+.PHONY: install
+install:
+	$(MAKE) -C backend install
+	$(MAKE) -C frontend install
 
 .PHONY: test
 test:

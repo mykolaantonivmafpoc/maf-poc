@@ -2,23 +2,21 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:latest
-      # - image: circleci/postgres:11.1-alpine
-      #   environment:
-      #     POSTGRES_USER: root
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build all docker containers
-          command: docker-compose build
-
-
-  test:
-    docker:
       - image: circleci/python:3.7.2-node-browsers
     steps:
       - checkout
+      - run:
+          name: Setup poetry
+          command: pip install poetry
+      - run:
+          name: Install dependencies
+          command: make install
+      - run:
+          name: Lint all code
+          command: make lint
+      - run:
+          name: Run all tests
+          command: make test
       - setup_remote_docker
       - run:
           name: Bring up all docker containers and test network reachability
@@ -26,13 +24,8 @@ jobs:
             set -x
             docker-compose up -d
             docker run --network container:api appropriate/curl \
-              --retry 10 --retry-delay 1 --retry-connrefused http://localhost:80/
-      - run:
-          name: Run all tests
-          command: make test
-      - run:
-          name: Lint all code
-          command: make lint
+              -s --retry 10 --retry-delay 1 --retry-connrefused http://localhost:80/
+            echo all is up
 
   deploy:
     docker:
@@ -79,11 +72,8 @@ workflows:
     jobs:
       - build:
           <<: *filter_master_and_PR
-      - test:
-          <<: *filter_master_and_PR
       - deploy:
           <<: *filter_master
           requires:
             - build
-            - test
 
