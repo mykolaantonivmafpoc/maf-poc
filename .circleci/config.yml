@@ -6,11 +6,9 @@ jobs:
       # - image: circleci/postgres:11.1-alpine
       #   environment:
       #     POSTGRES_USER: root
-
     steps:
       - checkout
       - setup_remote_docker
-
       - run:
           name: Build all docker containers
           command: docker-compose build
@@ -19,7 +17,6 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.7.2-node-browsers
-
     steps:
       - run:
           name: Bring up all docker containers and test network reachability
@@ -34,6 +31,16 @@ jobs:
       - run:
           name: Lint all code
           command: make lint
+
+  deploy:
+    docker:
+      - image: circleci/python:3.7.2-node-browsers
+    steps:
+      - run:
+          name: Push to ECR
+          command: |
+            set -x
+            echo Pushing
 
 
 # Default workflow filter to trigger on PR
@@ -63,3 +70,19 @@ experimental:
     branches:
       only:
         - master
+
+workflows:
+  version: 2
+  mafpoc:
+    jobs:
+      - build
+          <<: *filter_master_and_PR
+      - test
+          <<: *filter_master_and_PR
+          requires:
+            - build
+      - deploy
+          <<: *filter_master
+          requires:
+            - test
+
