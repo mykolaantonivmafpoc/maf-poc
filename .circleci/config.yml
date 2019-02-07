@@ -12,7 +12,7 @@ restore_cache: &restore_cache
   keys:
     # when lock file changes, use increasingly general patterns to restore cache
     - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-{{ checksum "frontend/yarn.lock" }}
-    - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
+    - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-
     - cache-v1-{{ .Branch }}-
     - cache-v1-
 
