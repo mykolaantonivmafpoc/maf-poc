@@ -18,6 +18,8 @@ jobs:
     docker:
       - image: circleci/python:3.7.2-node-browsers
     steps:
+      - checkout
+      - setup_remote_docker
       - run:
           name: Bring up all docker containers and test network reachability
           command: |
@@ -79,10 +81,9 @@ workflows:
           <<: *filter_master_and_PR
       - test:
           <<: *filter_master_and_PR
-          requires:
-            - build
       - deploy:
           <<: *filter_master
           requires:
+            - build
             - test
 
