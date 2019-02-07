@@ -75,13 +75,13 @@ workflows:
   version: 2
   mafpoc:
     jobs:
-      - build
+      - build:
           <<: *filter_master_and_PR
-      - test
+      - test:
           <<: *filter_master_and_PR
           requires:
             - build
-      - deploy
+      - deploy:
           <<: *filter_master
           requires:
             - test
