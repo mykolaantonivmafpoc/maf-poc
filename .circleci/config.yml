@@ -67,7 +67,7 @@ filter_PR: &filter_PR
   filters:
     branches:
       only:
-        - /^MAF-.*/
+        - /^.*MAF-.*/
 # Default workflow filter to trigger on master branch
 filter_merge: &filter_master
   filters:
@@ -79,7 +79,7 @@ branch_filters: &filter_master_and_PR
   filters:
     branches:
       only:
-        - /^MAF-.*/
+        - /^.*MAF-.*/
         - master
 
 # This syntax is from CircleCI 1.0 but it works on 2.0 per
