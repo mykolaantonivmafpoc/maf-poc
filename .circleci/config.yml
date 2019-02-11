@@ -59,28 +59,16 @@ jobs:
           name: Push to ECR
           command: |
             set -x
-            echo Pushing
+            env
+            echo Pushing "$CONTAINER"
 
-
-# Default workflow filter to trigger on PR
-filter_PR: &filter_PR
-  filters:
-    branches:
-      only:
-        - /^.*MAF-.*/
-# Default workflow filter to trigger on master branch
-filter_merge: &filter_master
+# Default workflow filter to trigger on develop and master
+branch_filters: &filter_deploy
   filters:
     branches:
       only:
         - master
-# Default workflow filter to trigger on PR and master branches
-branch_filters: &filter_master_and_PR
-  filters:
-    branches:
-      only:
-        - /^.*MAF-.*/
-        - master
+        - develop
 
 # This syntax is from CircleCI 1.0 but it works on 2.0 per
 # https://discuss.circleci.com/t/experimental-branch-notifications-from-1-0/12964
@@ -89,15 +77,15 @@ experimental:
     branches:
       only:
         - master
+        - develop
 
 workflows:
   version: 2
   mafpoc:
     jobs:
-      - build:
-          <<: *filter_master_and_PR
+      - build
       - deploy:
-          <<: *filter_master
+          <<: *filter_deploy
           requires:
             - build
 
