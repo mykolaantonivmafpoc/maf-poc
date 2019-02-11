@@ -1,0 +1,5 @@
+FROM postgres:11.1-alpine
+LABEL maintainer="Eugene Yunak <yyunak@softserveinc.com>"
+
+COPY ./data /data
+COPY ./docker/schema_code.sql /docker-entrypoint-initdb.d/

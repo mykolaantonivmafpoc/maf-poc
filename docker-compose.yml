@@ -6,15 +6,20 @@ services:
       context: .
       dockerfile: docker/Dockerfile.api
     container_name: api
-    # environment:
-    #   DB_HOST: postgres
-    #   DB_PORT: 5432
-    #   DB_URL: postgres://root@postgres/root?sslmode=disable
+    environment:
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PORT: 5432
+      DB_PASSWORD: dbpassword
+      DB_SCHEMA: analytics
     ports:
       - '8080:80'
 
   postgres:
-    image: postgres:11.1-alpine
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.db
+    container_name: db
     environment:
-      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dbpassword
 
