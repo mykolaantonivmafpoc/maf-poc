@@ -42,8 +42,8 @@ lint:
 
 .PHONY: coverage
 coverage:
-	$(MAKE) -C backend coverage
-	$(MAKE) -C frontend coverage
+	$(MAKE) -C backend test coverage
+	$(MAKE) -C frontend test coverage
 
 .PHONY: clean
 clean:

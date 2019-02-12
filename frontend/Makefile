@@ -17,13 +17,14 @@ lint:
 
 .PHONY: test
 test:
-	CI=true npm run test:unit
+	CI=true npm run test:unit -- --coverage
 
 .PHONY: coverage
 coverage:
-	@echo codecov
+	bash -c 'bash <(curl -s https://codecov.io/bash) -c -t $$CODECOV_TOKEN -F frontend'
 
 .PHONY: clean
 clean:
 	rm -rf node_modules
 	rm -rf build
+	rm -rf coverage

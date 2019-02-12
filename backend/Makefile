@@ -16,7 +16,7 @@ test:
 
 .PHONY: coverage
 coverage:
-	poetry run bash -c 'bash <(curl -s https://codecov.io/bash) -t $$CODECOV_TOKEN -F backend'
+	poetry run bash -c 'bash <(curl -s https://codecov.io/bash) -c -t $$CODECOV_TOKEN -F backend'
 
 .PHONY: clean
 clean:
