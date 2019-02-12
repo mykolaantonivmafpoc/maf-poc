@@ -19,6 +19,10 @@ lint:
 test:
 	CI=true npm run test:unit
 
+.PHONY: coverage
+coverage:
+	@echo codecov
+
 .PHONY: clean
 clean:
 	rm -rf node_modules

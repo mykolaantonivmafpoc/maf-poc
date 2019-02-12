@@ -12,7 +12,11 @@ lint:
 
 .PHONY: test
 test:
-	poetry run pytest tests
+	poetry run pytest --cov=./ tests
+
+.PHONY: coverage
+coverage:
+	poetry run bash -c 'bash <(curl -s https://codecov.io/bash) -t $$CODECOV_TOKEN -F backend'
 
 .PHONY: clean
 clean:

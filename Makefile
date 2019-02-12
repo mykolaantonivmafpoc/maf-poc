@@ -40,6 +40,11 @@ lint:
 	$(MAKE) -C backend lint
 	$(MAKE) -C frontend lint
 
+.PHONY: coverage
+coverage:
+	$(MAKE) -C backend coverage
+	$(MAKE) -C frontend coverage
+
 .PHONY: clean
 clean:
 	$(MAKE) -C backend clean

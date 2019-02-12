@@ -39,6 +39,10 @@ jobs:
       - run:
           name: Run unit tests
           command: make test-unit
+      - run:
+          name: Coverage analysis
+          command: make coverage
+
       - setup_remote_docker
       - run:
           name: Bring up all docker containers and test network reachability
@@ -90,9 +94,11 @@ workflows:
   version: 2
   mafpoc:
     jobs:
-      - build
+      - build:
+          context: maf
       - deploy:
           <<: *filter_deploy
+          context: maf
           requires:
             - build
 
