@@ -16,4 +16,7 @@ test:
 
 .PHONY: clean
 clean:
-	@echo clean
+	rm -rf $(shell poetry config settings.virtualenvs.path)
+	rm -rf *.egg-info
+	rm -rf .pytest_cache
+	rm -f .coverage coverage.xml
