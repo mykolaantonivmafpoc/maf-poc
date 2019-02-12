@@ -2,16 +2,17 @@ version: 2
 
 # Save prerequisites cache using pattern from https://circleci.com/docs/2.0/caching/
 save_cache: &save_cache
-  key: cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-{{ checksum "frontend/yarn.lock" }}
+  key: cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-{{ checksum "frontend/package-lock.json" }}
   paths:
     - /root/.cache
     - /home/circleci/.cache
+    - /root/.npm
 
 # Restore saved prerequisites cache using pattern from https://circleci.com/docs/2.0/caching/
 restore_cache: &restore_cache
   keys:
     # when lock file changes, use increasingly general patterns to restore cache
-    - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-{{ checksum "frontend/yarn.lock" }}
+    - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-{{ checksum "frontend/package-lock.json" }}
     - cache-v1-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}-
     - cache-v1-{{ .Branch }}-
     - cache-v1-
@@ -44,9 +45,15 @@ jobs:
           command: |
             set -x
             docker-compose up -d
+            # backend
             docker run --network container:api appropriate/curl \
               -s --retry 10 --retry-delay 1 --retry-connrefused http://localhost:80/
-            echo all is up
+            # frontend
+            docker run --network container:static appropriate/curl \
+              -s --retry 10 --retry-delay 1 --retry-connrefused http://localhost:80/
+            # database
+            docker run --network container:db appropriate/nc \
+              -z -v -w 10 localhost 5432
       - run:
           name: Run integration tests
           command: make test-integration

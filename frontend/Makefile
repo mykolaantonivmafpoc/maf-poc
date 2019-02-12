@@ -1,15 +1,25 @@
+.PHONY: run
+run:
+	npm start
+
+.PHONY: build
+build:
+	npm run build
+
 .PHONY: install
 install:
-	@echo yarn install
+	npm ci
 
 .PHONY: lint
 lint:
-	@echo yarn lint
+	npm run test:lint:js
+	npm run test:lint:css
 
 .PHONY: test
 test:
-	@echo yarn test
+	CI=true npm run test:unit
 
 .PHONY: clean
 clean:
-	@echo clean
+	rm -rf node_modules
+	rm -rf build

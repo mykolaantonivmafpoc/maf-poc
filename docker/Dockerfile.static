@@ -1,0 +1,14 @@
+FROM node:11.9-alpine as build-stage
+LABEL maintainer="Eugene Yunak <yyunak@softserveinc.com>"
+
+WORKDIR /home/node
+COPY ./frontend/package*.json ./
+
+RUN npm ci
+
+COPY ./frontend/ .
+
+RUN npm run build
+
+FROM nginx:mainline-alpine
+COPY --from=build-stage /home/node/build/ /usr/share/nginx/html

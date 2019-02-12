@@ -18,7 +18,7 @@ docker-login:
 .PHONY: docker-build
 docker-build:
 	docker build -t $(IMAGE_NAME)-api:$(TAG) -f docker/Dockerfile.api .
-#	docker build -t $(IMAGE_NAME)-static:$(TAG) -f docker/Dockerfile.static .
+	docker build -t $(IMAGE_NAME)-static:$(TAG) -f docker/Dockerfile.static .
 	docker build -t $(IMAGE_NAME)-db:$(TAG) -f docker/Dockerfile.db .
 
 .PHONY: install

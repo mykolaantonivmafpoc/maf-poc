@@ -15,6 +15,14 @@ services:
     ports:
       - '8080:80'
 
+  static:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.static
+    container_name: static
+    ports:
+      - '8888:80'
+
   postgres:
     build:
       context: .
