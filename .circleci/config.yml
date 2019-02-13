@@ -1,4 +1,8 @@
-version: 2
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@0.1.9
+  aws-ecs: circleci/aws-ecs@0.0.6
 
 # Save prerequisites cache using pattern from https://circleci.com/docs/2.0/caching/
 save_cache: &save_cache
@@ -63,12 +67,24 @@ jobs:
     docker:
       - image: circleci/python:3.7.2-node-browsers
     steps:
+      - checkout
+      - aws-cli/install
+      - aws-cli/configure
       - run:
-          name: Push to ECR
+          name: Setup environment
           command: |
-            set -x
-            env
-            echo Pushing "$CONTAINER"
+            echo 'export TAG="0.0.${CIRCLE_BUILD_NUM}-$(git rev-parse --short HEAD)"' >> $BASH_ENV
+      - run:
+          name: Build containers and push to ECR
+          command: make docker-build-push
+      - aws-ecs/update-service:
+          family: "static-${CIRCLE_BRANCH}"
+          cluster-name: "maf"
+          service-name: "static-${CIRCLE_BRANCH}-service"
+          container-image-name-updates: "container=static-${CIRCLE_BRANCH},tag=${TAG}"
+      - run:
+          name: Run smoke tests
+          command: make test-integration
 
 # Default workflow filter to trigger on develop and master
 branch_filters: &filter_deploy
@@ -93,6 +109,7 @@ workflows:
     jobs:
       - build:
           context: maf
+
       - deploy:
           <<: *filter_deploy
           context: maf

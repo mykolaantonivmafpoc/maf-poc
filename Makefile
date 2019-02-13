@@ -1,8 +1,8 @@
 CIRCLE_BUILD_NUM ?= 0
-TAG = 0.0.$(CIRCLE_BUILD_NUM)-$(shell git rev-parse --short HEAD)
-REGISTRY_ID ?= 137007403666
+TAG ?= 0.0.$(CIRCLE_BUILD_NUM)-$(shell git rev-parse --short HEAD)
+REGISTRY_ID ?= 485758728177
 REPOSITORY_REGION ?= eu-central-1
-IMAGE_NAME = $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/maf-poc
+REPO_NAME = $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/maf-poc
 
 .PHONY: run
 run:
@@ -11,15 +11,15 @@ run:
 .PHONY: test
 test: lint test-unit run test-integration
 
-.PHONY: docker-login
-docker-login:
+.PHONY: docker-build-push
+docker-build-push:
 	eval $$(aws ecr get-login --registry-id $(REGISTRY_ID) --region $(REPOSITORY_REGION) --no-include-email)
-
-.PHONY: docker-build
-docker-build:
-	docker build -t $(IMAGE_NAME)-api:$(TAG) -f docker/Dockerfile.api .
-	docker build -t $(IMAGE_NAME)-static:$(TAG) -f docker/Dockerfile.static .
-	docker build -t $(IMAGE_NAME)-db:$(TAG) -f docker/Dockerfile.db .
+	docker build -t $(REPO_NAME)/db:$(TAG) -f docker/Dockerfile.db .
+	docker build -t $(REPO_NAME)/api:$(TAG) -f docker/Dockerfile.api .
+	docker build -t $(REPO_NAME)/static:$(TAG) -f docker/Dockerfile.static .
+	docker push $(REPO_NAME)/db:$(TAG)
+	docker push $(REPO_NAME)/api:$(TAG)
+	docker push $(REPO_NAME)/static:$(TAG)
 
 .PHONY: install
 install:
