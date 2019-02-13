@@ -3,7 +3,7 @@ import RESTClient from './RESTClient';
 describe('RESTClient', () => {
   it('rejects the wrong HTTP types', () => {
     const promise = RESTClient.sendQuery('a', 'ADF');
-    expect(promise).rejects.toEqual('Unsupported type');
+    expect(promise).rejects.toEqual(new Error('Unsupported type'));
   });
 
   it('shall fetch data', () => {

@@ -1,0 +1,49 @@
+.login-wrapper {
+  background-color: #2f2e32 !important;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.btn-primary.btn-lg {
+  background: #b5975a;
+  border-color: #b5975a;
+  border-radius: 0;
+}
+
+.form-signin {
+  text-align: center;
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin div {
+  text-align: left;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 0;
+}
+
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+
+.form-check {
+  margin-top: 20px;
+}

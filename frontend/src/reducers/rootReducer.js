@@ -1,5 +1,6 @@
 import merge from 'lodash/merge';
 import { combineReducers } from 'redux';
+import login from './loginReducer';
 
 const entities = (state = { users: {}, campaigns: {}, links: {} }, action) => {
   let out = Object.assign({}, state);
@@ -12,7 +13,8 @@ const entities = (state = { users: {}, campaigns: {}, links: {} }, action) => {
 
 
 const rootReducer = combineReducers({
-  entities
+  entities,
+  login
 });
 
 export default rootReducer;

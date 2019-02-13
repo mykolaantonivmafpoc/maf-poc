@@ -6,7 +6,8 @@ import {
   Redirect
 } from 'react-router-dom';
 
-// import AuthService from '../services/authService';
+import PrivateRoute from '../../components/Routing/PrivateRoute';
+
 import Dashboard from '../Dashboard';
 import Campaigns from '../Campaigns';
 import Login from '../Login';
@@ -22,9 +23,10 @@ const Root = ({ store }) => {
             <Redirect to={{ pathname: '/dashboard' }}/>
           )}
         />
-        <Route path="/dashboard" component={Dashboard}/>
-        <Route path="/campaigns" component={Campaigns}/>
         <Route path="/login" component={Login} />
+
+        <PrivateRoute path="/dashboard" component={Dashboard}/>
+        <PrivateRoute path="/campaigns" component={Campaigns}/>
       </section>
     </Provider>
   );
