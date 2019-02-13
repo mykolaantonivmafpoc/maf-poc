@@ -1,12 +1,14 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension'; // eslint-disable-line import/no-extraneous-dependencies
 import rootReducer from '../reducers/roodReducer';
+import HATEOASApi from '../middleware/hateoasApi';
 
 const initialState = {
   // to append initial state
 };
 
-const composeEnhancers = compose;
+const composeEnhancers = composeWithDevTools;
 
 const appStore = () => {
   const combinedInitialState = {
@@ -18,7 +20,7 @@ const appStore = () => {
     rootReducer,
     combinedInitialState,
     composeEnhancers(
-      applyMiddleware(thunk)
+      applyMiddleware(thunk, HATEOASApi)
     )
   );
 };
