@@ -1,6 +1,6 @@
 .PHONY: run
 run:
-	FLASK_APP=api.main:app FLASK_ENV=development poetry run flask run
+	FLASK_APP=app.run:app FLASK_ENV=development FLASK_RUN_PORT=8080 poetry run flask run
 
 .PHONY: install
 install:
@@ -24,3 +24,4 @@ clean:
 	rm -rf *.egg-info
 	rm -rf .pytest_cache
 	rm -f .coverage coverage.xml
+	rm -f /tmp/test.db
