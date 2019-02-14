@@ -13,13 +13,27 @@ const campaignListItemSchema = new schema.Entity('campaigns', {
   }
 });
 
-const productListSchema = new schema.Entity('product', {});
+const productListSchema = new schema.Entity('products', {}, {
+  idAttribute: 'product_id'
+});
+
+const department = new schema.Entity('department', {});
+const family_category = new schema.Entity('family_category', {});
+const section = new schema.Entity('section', {});
+const sub_family_category = new schema.Entity('sub_family_category', {});
 
 export const campaignsListSchema = {
   content: [campaignListItemSchema],
 };
 
 export const campaignSchema = {
-  meta: new schema.Entity('campaigns', {}),
+  meta: new schema.Entity('campaigns', {
+    kpi_options: {
+      department: [department],
+      family_category: [family_category],
+      section: [section],
+      sub_family_category: [sub_family_category]
+    }
+  }),
   content: [productListSchema]
 };

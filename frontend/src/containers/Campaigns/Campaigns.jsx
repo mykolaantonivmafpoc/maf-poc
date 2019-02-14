@@ -1,31 +1,127 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loadAllCampaigns, loadCampaign } from '../../actions/campaignActions';
+import { Link } from 'react-router-dom';
+import { loadAllCampaigns } from '../../actions/campaignActions';
+import DataGrid from '../../components/DataVisualization/DataGrid';
+import { campaignListTableDef } from '../../config';
 
+import './Campaigns.css';
 
 class Campaigns extends Component {
   static propTypes = {
-    campaigns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    loadAllCampaigns: PropTypes.func.isRequired,
-    loadCampaign: PropTypes.func.isRequired
+    campaigns: PropTypes.arrayOf(PropTypes.shape([])),
+    meta: PropTypes.shape({ type: PropTypes.string })
   };
 
-  componentWillMount() {
-    const { loadAllCampaigns: load, loadCampaign: lc } = this.props;
-    load();
-    setTimeout(() => {
-      lc(1, ['CAMPAIGN_DATE', 'CAMPAIGN_NAME', 'CAMPAIGN_TYPE']);
-    }, 2000);
+  static defaultProps = {
+    meta: { type: 'Campaign' },
+    campaigns: []
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const { loadAllCampaigns: load, isFetchingOptions } = props;
+    if (isFetchingOptions !== state.isFetchingOptions) {
+      if (isFetchingOptions === false) {
+        load();
+      }
+      return { isFetchingOptions };
+    }
+
+    return null;
+  }
+
+  constructor() {
+    super();
+    this.state = {};
+  }
+
+  Campaign = ({ type, name, id, date }) => (
+    <div className="cell-campaign-inner-wrapper">
+      <div className="text-muted campaign-type">{type}</div>
+      <div className="campaign-name"><Link to={`/campaign/${id}`}>{name}</Link></div>
+      <div className="text-muted campaign-date">{date}</div>
+    </div>
+  );
+
+  ValuePercentPare = (props) => {
+    const class_percentageColor = +props.percent > 0 ? 'text-success' : 'text-danger';
+
+    return (
+      <div>
+        <div>{props.value}</div>
+        <div className={`percentages ${class_percentageColor}`}>
+          {props.percent}
+          %
+        </div>
+      </div>
+    );
+  }
+
+  genRows() {
+    const { campaigns } = this.props;
+    return campaigns.map((row) => {
+      const transformedRow = {};
+      const dateTo = new Date(row.date_to);
+      const dateFrom = new Date(row.date_from);
+
+      transformedRow.campaign = {
+        value: (<this.Campaign
+          type={row.campaign_type}
+          name={row.name}
+          date={`${dateFrom} - ${dateTo}`}
+          id={row.id}
+        />),
+        className: 'cell-campaign'
+      };
+
+      transformedRow.sales = (
+        <this.ValuePercentPare
+          value={row.incr_sales}
+          percent={row.incr_sales_per}
+        />
+      );
+
+      transformedRow.margin = (
+        <this.ValuePercentPare
+          value={row.incr_margin}
+          percent={row.incr_sales_per} // Missing Percent
+        />
+      );
+
+      transformedRow.traffic = (
+        <this.ValuePercentPare
+          value={row.incr_traffic}
+          percent={row.incr_traffic_per}
+        />
+      );
+
+      transformedRow.basket = (
+        <this.ValuePercentPare
+          value={row.incr_basket}
+          percent={row.incr_basket_per}
+        />
+      );
+
+      transformedRow.tse = (
+        <this.ValuePercentPare
+          value={row.incr_tse}
+          percent={row.incr_tse_per}
+        />
+      );
+
+      return transformedRow;
+    });
   }
 
   render() {
-    const { campaigns } = this.props;
+    const { meta } = this.props;
+    const data = { ...campaignListTableDef, rows: this.genRows() };
 
     return (
       <section>
-        <header><h1>Campaigns</h1></header>
-        <p>{JSON.stringify(campaigns)}</p>
+        <header><h1>{meta && meta.type || 'Loading...'}</h1></header>
+        <DataGrid data={data} className="campaigns-data-grid"/>
       </section>
     );
   }
@@ -33,13 +129,25 @@ class Campaigns extends Component {
 
 const mapStateToProps = (state) => {
   const {
-    entities: { campaigns }
+    entities: {
+      campaigns,
+    },
+    data: {
+      options: {
+        isFetching: isFetchingOptions
+      },
+      campaignList: {
+        content: campaignList,
+        meta
+      }
+    }
   } = state;
+
   return {
-    campaigns: Object.values(campaigns)
+    campaigns: campaignList && campaignList.map(id => campaigns[id]),
+    meta,
+    isFetchingOptions
   };
 };
 
-export default connect(mapStateToProps, {
-  loadAllCampaigns, loadCampaign
-})(Campaigns);
+export default connect(mapStateToProps, { loadAllCampaigns })(Campaigns);

@@ -1,8 +1,5 @@
 import { CALL_API, packTypes } from '../middleware/hateoasApi';
 import Schemas from '../schemas';
-import {
-  API_PATH
-} from '../config';
 
 import {
   GETALL_REQUEST,
@@ -17,7 +14,10 @@ import {
 const fetchAll = () => ({
   [CALL_API]: {
     types: packTypes(GETALL_REQUEST, GETALL_SUCCESS, GETALL_FAILURE),
-    endpoint: `${API_PATH}Campaign`,
+    endpoint: {
+      key: -1,
+      rel: 'Campaigns'
+    },
     schema: Schemas.CAMPAIGN_LIST
   }
 });

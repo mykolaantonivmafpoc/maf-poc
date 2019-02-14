@@ -1,0 +1,12 @@
+.chart-tooltip {
+  padding: 20px;
+  box-shadow: 0 0 10px 0 #0003;
+  background-color: #fff;
+  border-collapse: unset;
+}
+
+.tooltip-label {
+  text-align: right;
+  padding-right: 25px;
+  font-weight: 600;
+}

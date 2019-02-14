@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import {
@@ -10,34 +10,47 @@ import PrivateRoute from '../../components/Routing/PrivateRoute';
 
 import Dashboard from '../Dashboard';
 import Campaigns from '../Campaigns';
+import Campaign from '../Campaign';
 import Login from '../Login';
 
-const Root = ({ store }) => {
-  return (
-    <Provider store={store}>
-      <section>
-        <Route
-          exact
-          path="/"
-          render={() => (
-            <Redirect to={{ pathname: '/dashboard' }}/>
-          )}
-        />
-        <Route path="/login" component={Login} />
+import optionsAction from '../../actions/HATEOASActions';
 
-        <PrivateRoute path="/dashboard" component={Dashboard}/>
-        <PrivateRoute path="/campaigns" component={Campaigns}/>
-      </section>
-    </Provider>
-  );
-};
+class Root extends Component {
+  static propTypes = {
+    store: PropTypes.shape({
+      dispatch: PropTypes.func,
+      getState: PropTypes.func,
+      replaceReducer: PropTypes.func,
+      subscribe: PropTypes.func,
+    }).isRequired,
+  }
 
-Root.propTypes = {
-  store: PropTypes.shape({
-    dispatch: PropTypes.func,
-    getState: PropTypes.func,
-    replaceReducer: PropTypes.func,
-    subscribe: PropTypes.func,
-  }).isRequired,
-};
+  componentWillMount() {
+    const { store: { dispatch: d } } = this.props;
+    optionsAction(d);
+  }
+
+  render() {
+    const { store } = this.props;
+    return (
+      <Provider store={store}>
+        <section>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <Redirect to={{ pathname: '/campaigns' }}/>
+            )}
+          />
+          <Route path="/login" component={Login} />
+
+          <PrivateRoute path="/dashboard" component={Dashboard}/>
+          <PrivateRoute path="/campaigns" component={Campaigns}/>
+          <PrivateRoute path="/campaign/:id" component={Campaign}/>
+        </section>
+      </Provider>
+    );
+  }
+}
+
 export default Root;

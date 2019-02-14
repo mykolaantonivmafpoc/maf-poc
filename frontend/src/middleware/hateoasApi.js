@@ -40,7 +40,12 @@ const callApi = async (endpoint, schema, verb) => {
   if (response && response.error) {
     throw response;
   }
-  const normalized = normalize(response, schema);
+  // temporary
+  let resp = response;
+  if (typeof response === 'string') {
+    resp = JSON.parse(response);
+  }
+  const normalized = normalize(resp, schema);
   out = Object.assign({},
     normalized,
   );
