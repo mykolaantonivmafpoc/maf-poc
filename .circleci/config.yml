@@ -77,7 +77,7 @@ jobs:
             echo 'export TAG="0.0.${CIRCLE_BUILD_NUM}-$(git rev-parse --short HEAD)"' >> $BASH_ENV
       - run:
           name: Build containers and push to ECR
-          command: API_ROOT="https://api-${CIRCLE_BRANCH}.maf.yunak.eu" make docker-build-push
+          command: API_ROOT="https://api-${CIRCLE_BRANCH}.maf-poc.com" make docker-build-push
       - aws-ecs/update-service:
           family: "static-${CIRCLE_BRANCH}"
           cluster-name: "maf"

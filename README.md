@@ -9,8 +9,8 @@ You should now be able to access frontend on http://localhost:8888/. API Swagger
 
 AWS ECS endpoints deployed through CI:
 
-| Container / branch |               develop               |               master               |
-|--------------------|:-----------------------------------:|:----------------------------------:|
-| ui                 | https://static-develop.maf.yunak.eu | https://static-master.maf.yunak.eu |
-| api                | https://api-develop.maf.yunak.eu    | https://api-master.maf.yunak.eu    |
+| Container / branch |               develop              |               master              |
+|--------------------|:----------------------------------:|:---------------------------------:|
+| ui                 | https://static-develop.maf-poc.com | https://static-master.maf-poc.com |
+| api                | https://api-develop.maf-poc.com    | https://api-master.maf-poc.com    |
 
