@@ -83,6 +83,11 @@ jobs:
           cluster-name: "maf"
           service-name: "static-${CIRCLE_BRANCH}-service"
           container-image-name-updates: "container=static-${CIRCLE_BRANCH},tag=${TAG}"
+      - aws-ecs/update-service:
+          family: "api-${CIRCLE_BRANCH}"
+          cluster-name: "maf"
+          service-name: "api-${CIRCLE_BRANCH}-service"
+          container-image-name-updates: "container=api-${CIRCLE_BRANCH},tag=${TAG},container=db-${CIRCLE_BRANCH},tag=${TAG}"
       - run:
           name: Run smoke tests
           command: make test-integration
