@@ -1,14 +1,16 @@
 FROM node:11.9-alpine as build-stage
 LABEL maintainer="Eugene Yunak <yyunak@softserveinc.com>"
 
-WORKDIR /home/node
-COPY ./frontend/package*.json ./
+RUN apk add --no-cache --virtual make
 
-RUN npm ci
+WORKDIR /home/node
+
+COPY ./frontend/package*.json ./frontend/Makefile ./
+RUN make install
 
 COPY ./frontend/ .
-
-RUN npm run build
+ARG API_ROOT
+RUN make build
 
 FROM nginx:mainline-alpine
 COPY ./docker/nginx.conf /etc/nginx/conf.d/default.conf

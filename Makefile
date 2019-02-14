@@ -16,7 +16,7 @@ docker-build-push:
 	eval $$(aws ecr get-login --registry-id $(REGISTRY_ID) --region $(REPOSITORY_REGION) --no-include-email)
 	docker build -t $(REPO_NAME)/db:$(TAG) -f docker/Dockerfile.db .
 	docker build -t $(REPO_NAME)/api:$(TAG) -f docker/Dockerfile.api .
-	docker build -t $(REPO_NAME)/static:$(TAG) -f docker/Dockerfile.static .
+	docker build -t $(REPO_NAME)/static:$(TAG) -f docker/Dockerfile.static --build-arg API_ROOT=$$API_ROOT .
 	docker push $(REPO_NAME)/db:$(TAG)
 	docker push $(REPO_NAME)/api:$(TAG)
 	docker push $(REPO_NAME)/static:$(TAG)

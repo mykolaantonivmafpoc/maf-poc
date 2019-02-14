@@ -1,10 +1,12 @@
+API_ROOT ?= http://localhost:8080
+
 .PHONY: run
 run:
-	npm start
+	REACT_APP_API_ROOT=$(API_ROOT) npm start
 
 .PHONY: build
 build:
-	npm run build
+	REACT_APP_API_ROOT=$(API_ROOT) npm run build
 
 .PHONY: install
 install:

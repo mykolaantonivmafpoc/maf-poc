@@ -1,5 +1,17 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Quickstart
+
+In this (`frontend`) directory, run `make install` to initialize dev environment.
+
+Now you can run `make` to start the dev server, accessible on http://localhost:3000. Use `apiuser`:`apipass` to log in.
+
+You will need a running backend however, by default it needs to be accessible on http://localhost:8080. There are three ways to get it:
+
+1. Run `make` in root dir to spawn a docker-compose stack with everything, including a non-conflicting copy of frontend.
+2. Run `make install` followed by `make` in the `backend` directory, this will start the backend outside of a container.
+3. Run `API_ROOT=https://api-develop.maf.yunak.eu make` in here (`frontend`) to connect to the latest `develop` version of the API deployed on AWS ECS.
+
 ## Available Scripts
 
 In the project directory, you can run:
