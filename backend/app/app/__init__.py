@@ -90,7 +90,7 @@ app.config['BASIC_AUTH_PASSWORD'] = \
 
 cors = CORS(
     app,
-    resources={r"/v1/api/*": {
+    resources={r"/v1/*": {
         "origins": os.getenv('CORS_ORIGINS', default="*")
     }}
 )

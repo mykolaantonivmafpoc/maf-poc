@@ -13,7 +13,8 @@ from ..model import PromoMechanic # NOQA
 from ..model import KpiFact
 
 
-@app.route('/v1/Campaign', methods=['GET'])
+@app.route('/v1/Campaigns', methods=['GET'])
+@app.route('/v1/Campaigns/', methods=['GET'])
 @basic_auth.required
 def listCampaign():
     """Campaign dimmension.
@@ -27,7 +28,8 @@ def listCampaign():
     """
     frame = create_frame() # NOQA
 
-    frame['meta']['type'] = 'Campaign'
+    frame['meta']['type'] = 'Campaigns'
+    frame['meta']['kpis'] = kpi_list
 
     ml = Campaign.query.all()
     content = [
@@ -69,6 +71,7 @@ def listCampaign():
 
 
 @app.route('/v1/Campaign/<int:id>', methods=['GET'])
+@app.route('/v1/Campaign/<int:id>/', methods=['GET'])
 @basic_auth.required
 def listCampaignItem(id):
     """Campaign single item.
@@ -127,6 +130,8 @@ def listCampaignItem(id):
     columns = [
         KpiFact.product_id.label('product_id'),
         Product.name.label('product_name'),
+        KpiFact.product_id.label('product_id'),
+        Product.name.label('product_name'),
         Product.supplier_id.label('supplier_id'),
         Supplier.name.label('supplier_name'),
         KpiFact.department_id.label('department_id'),
@@ -147,6 +152,19 @@ def listCampaignItem(id):
     query_args = columns + aggregates
 
     if hasattr(ml, 'kpi_fact'):
+
+        meta_options_query = db.session.query(*query_args)\
+            .join(Product, Product.id == KpiFact.product_id)\
+            .join(Supplier, Supplier.id == Product.supplier_id)\
+            .join(Department, Department.id == KpiFact.department_id)\
+            .join(Section, Section.id == KpiFact.section_id)\
+            .join(FamilyCategory,
+                  FamilyCategory.id == KpiFact.family_category_id)\
+            .join(SubFamilyCategory,
+                  SubFamilyCategory.id == KpiFact.sub_family_category_id)\
+            .filter(*argsFilter)\
+            .group_by(*columns).all()
+
         frame['content'] = [
             {
                 'product_id': x.product_id,
@@ -161,36 +179,24 @@ def listCampaignItem(id):
                 'family_category_name': x.family_category_name,
                 'sub_family_category_id': x.sub_family_category_id,
                 'sub_family_category_name': x.sub_family_category_name,
-                'incr_sales': float(x.incr_sales),
-                'incr_sales_per': float(x.incr_sales_per),
-                'incr_margin': float(x.incr_margin),
-                'incr_traffic': float(x.incr_traffic),
-                'incr_basket': float(x.incr_basket),
-                'incr_tse': float(x.incr_tse),
-                'ipromo_depth': float(x.ipromo_depth),
-                'total_sales': float(x.total_sales),
-                'volume_sold': float(x.volume_sold),
-                'promo_price': float(x.promo_price),
-                'slash_price': float(x.slash_price),
-                'cost_price': float(x.cost_price),
-                'incr_traffic_per': float(x.incr_traffic_per),
-                'incr_basket_per': float(x.incr_basket_per),
-                'incr_tse_per': float(x.incr_tse_per),
-                'timestamp': x.timestamp
+                'incr_sales': str(x.incr_sales),
+                'incr_sales_per': str(x.incr_sales_per),
+                'incr_margin': str(x.incr_margin),
+                'incr_traffic': str(x.incr_traffic),
+                'incr_basket': str(x.incr_basket),
+                'incr_tse': str(x.incr_tse),
+                'ipromo_depth': str(x.ipromo_depth),
+                'total_sales': str(x.total_sales),
+                'volume_sold': str(x.volume_sold),
+                'promo_price': str(x.promo_price),
+                'slash_price': str(x.slash_price),
+                'cost_price': str(x.cost_price),
+                'incr_traffic_per': str(x.incr_traffic_per),
+                'incr_basket_per': str(x.incr_basket_per),
+                'incr_tse_per': str(x.incr_tse_per),
+                # 'timestamp': x.timestamp
                 # '_links': {}
-            } for x in db.session.query(
-                *query_args
-            )
-            .join(Product, Product.id == KpiFact.product_id)
-            .join(Supplier, Supplier.id == Product.supplier_id)
-            .join(Department, Department.id == KpiFact.department_id)
-            .join(Section, Section.id == KpiFact.section_id)
-            .join(FamilyCategory,
-                  FamilyCategory.id == KpiFact.family_category_id)
-            .join(SubFamilyCategory,
-                  SubFamilyCategory.id == KpiFact.sub_family_category_id)
-            .filter(*argsFilter)
-            .group_by(KpiFact.product_id).all()
+            } for x in meta_options_query
         ]
 
         meta_options = [
@@ -225,16 +231,20 @@ def listCampaignItem(id):
                 else:
                     frame['meta']['kpi_options'][i] = {}
 
-            for x in frame['content']:
+            kpi_opts = frame['meta']['kpi_options']
+
+            for x in meta_options_query:
+
                 if 'timestamp' == i:
-                    if x[i] not in frame['meta']['kpi_options'][i]:
-                        frame['meta']['kpi_options'][i].append(x[i])
+
+                    if getattr(x, i) not in kpi_opts[i]:
+                        kpi_opts[i].append(getattr(x, i))
                     continue
 
-                if x[i + '_id'] not in frame['meta']['kpi_options'][i]:
-                    frame['meta']['kpi_options'][i][x[i + '_id']] = {
-                        "id": x[i + '_id'],
-                        "name": x[i + '_name'],
+                if getattr(x, i + '_id') not in kpi_opts[i]:
+                    kpi_opts[i][getattr(x, i + '_id')] = {
+                        "id": getattr(x, i + '_id'),
+                        "name": getattr(x, i + '_name'),
                     }
 
     frame['_links'] = {
