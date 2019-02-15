@@ -30,6 +30,7 @@ kpi_list = [
 
 
 class BaseModel():
+    __table_args__ = {'schema': 'analytics'}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     description = db.Column(db.String(128))
@@ -49,7 +50,7 @@ class Campaign(BaseModel, db.Model):
     __tablename__ = 'campaign'
     campaign_type_id = db.Column(
         db.Integer,
-        db.ForeignKey('campaign_type.id')
+        db.ForeignKey('analytics.campaign_type.id')
     )
     kpi_fact = db.relationship(
         'KpiFact',
@@ -64,7 +65,7 @@ class Product(BaseModel, db.Model):
     __tablename__ = 'product'
     supplier_id = db.Column(
         db.Integer,
-        db.ForeignKey('supplier.id')
+        db.ForeignKey('analytics.supplier.id')
     )
     kpi_fact = db.relationship(
         'KpiFact',
@@ -132,32 +133,32 @@ class KpiFact(db.Model):
 
     campaign_id = db.Column(
         db.Integer,
-        db.ForeignKey('campaign.id')
+        db.ForeignKey('analytics.campaign.id')
     )
 
     department_id = db.Column(
         db.Integer,
-        db.ForeignKey('department.id')
+        db.ForeignKey('analytics.department.id')
     )
     family_category_id = db.Column(
         db.Integer,
-        db.ForeignKey('family_category.id')
+        db.ForeignKey('analytics.family_category.id')
     )
     product_id = db.Column(
         db.Integer,
-        db.ForeignKey('product.id')
+        db.ForeignKey('analytics.product.id')
     )
     promo_mechanic_id = db.Column(
         db.Integer,
-        db.ForeignKey('promo_mechanic.id')
+        db.ForeignKey('analytics.promo_mechanic.id')
     )
     section_id = db.Column(
         db.Integer,
-        db.ForeignKey('section.id')
+        db.ForeignKey('analytics.section.id')
     )
     sub_family_category_id = db.Column(
         db.Integer,
-        db.ForeignKey('sub_family_category.id')
+        db.ForeignKey('analytics.sub_family_category.id')
     )
     incr_sales = db.Column(db.Numeric(10, 4))
     incr_sales_per = db.Column(db.Numeric(10, 4))
@@ -196,5 +197,6 @@ class KpiFact(db.Model):
             'section_id',
             'sub_family_category_id',
             name='kpi_fact_uix_1'
-        )
+        ),
+        {'schema': 'analytics'}
     )

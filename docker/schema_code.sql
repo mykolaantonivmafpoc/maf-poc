@@ -1,56 +1,208 @@
---create analytics schema
-CREATE SCHEMA IF NOT EXISTS analytics;
+create schema analytics;
 
-CREATE table analytics.products(
-   PRODUCT_ID integer,
-   PRODUCT_DESC varchar(50),
-   DEPARTMENT_CAT varchar(50),
-   SECTION_CAT varchar(50),
-   FAMILY_CAT varchar(50),
-   SUBFAMILY_CAT varchar(50),
-   PROMO_MECHANIC varchar(50),
-   SUPPLIER_ID integer,
-primary key (PRODUCT_ID, PROMO_MECHANIC)
-)
-;
+-- Table: promo_mechanic
+CREATE TABLE analytics.promo_mechanic (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    )
+);
 
-CREATE table analytics.campaigns (
-   CAMPAIGN_NAME varchar(50),
-   CAMPAIGN_TYPE varchar(50),
-   CAMPAIGN_DATE date,
-primary key (CAMPAIGN_NAME, CAMPAIGN_TYPE, CAMPAIGN_DATE)
-)
-;
+-- Table: section
+CREATE TABLE analytics.section (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    )
+);
 
-CREATE table analytics.product_kpis(
-   PRODUCT_ID integer,
-   CAMPAIGN_NAME varchar(50),
-   CAMPAIGN_DATE date,
-   INCR_SALES numeric(20,5),
-   INCR_SALES_PER numeric(12,4),
-   INCR_MARGIN numeric(20,5),
-   INCR_TRAFFIC numeric(20,5),
-   INCR_BASKET numeric(20,5),
-   INCR_TSE numeric(20,5),
-   IPROMO_DEPTH numeric(20,5),
-   TOTAL_SALES numeric(20,5),
-   VOLUME_SOLD numeric(20,5),
-   PROMO_PRICE numeric(12,4),
-   SLASH_PRICE numeric(12,4),
-   COST_PRICE numeric(20,5),
-   INCR_TRAFFIC_PER numeric(12,4),
-   INCR_BASKET_PER numeric(12,4),
-   INCR_TSE_PER numeric(12,4),
-primary key (PRODUCT_ID,CAMPAIGN_NAME, CAMPAIGN_DATE)
-)
-;
+-- Table: sub_family_category
+CREATE TABLE analytics.sub_family_category (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    )
+);
 
---load data from csv files
-COPY analytics.products
-FROM '/data/products.csv' delimiter ',' CSV header;
+-- Table: supplier
+CREATE TABLE analytics.supplier (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    )
+);
 
-COPY analytics.campaigns
-FROM '/data/campaigns.csv' delimiter ',' CSV header;
+-- Table: campaign_type
+CREATE TABLE analytics.campaign_type (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    )
+);
 
-COPY analytics.product_kpis
-FROM '/data/product_kpis.csv' delimiter ',' CSV header;
+-- Table: department
+CREATE TABLE analytics.department (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    )
+);
+
+-- Table: family_category
+CREATE TABLE analytics.family_category (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    )
+);
+
+-- Table: campaign
+CREATE TABLE analytics.campaign (
+    id               INTEGER       NOT NULL,
+    name             VARCHAR (128),
+    description      VARCHAR (128),
+    campaign_type_id INTEGER,
+    date_from        DATE,
+    date_to          DATE,
+    timestamp        timestamp,
+    PRIMARY KEY (
+        id
+    ),
+    FOREIGN KEY (
+        campaign_type_id
+    )
+    REFERENCES analytics.campaign_type (id)
+);
+
+-- Table: product
+CREATE TABLE analytics.product (
+    id          INTEGER       NOT NULL,
+    name        VARCHAR (128),
+    description VARCHAR (128),
+    supplier_id INTEGER,
+    timestamp   timestamp,
+    PRIMARY KEY (
+        id
+    ),
+    FOREIGN KEY (
+        supplier_id
+    )
+    REFERENCES analytics.supplier (id)
+);
+
+-- Table: kpi_fact
+CREATE TABLE analytics.kpi_fact (
+    campaign_id            INTEGER         NOT NULL,
+    department_id          INTEGER         NOT NULL,
+    family_category_id     INTEGER         NOT NULL,
+    product_id             INTEGER         NOT NULL,
+    promo_mechanic_id      INTEGER         NOT NULL,
+    section_id             INTEGER         NOT NULL,
+    sub_family_category_id INTEGER         NOT NULL,
+    incr_sales             NUMERIC (20, 5),
+    incr_sales_per         NUMERIC (20, 4),
+    incr_margin            NUMERIC (20, 5),
+    incr_traffic           NUMERIC (20, 4),
+    incr_basket            NUMERIC (20, 4),
+    incr_tse               NUMERIC (20, 4),
+    ipromo_depth           NUMERIC (20, 4),
+    total_sales            NUMERIC (20, 4),
+    volume_sold            NUMERIC (20, 4),
+    promo_price            NUMERIC (20, 4),
+    slash_price            NUMERIC (20, 4),
+    cost_price             NUMERIC (20, 5),
+    incr_traffic_per       NUMERIC (20, 4),
+    incr_basket_per        NUMERIC (20, 4),
+    incr_tse_per           NUMERIC (20, 4),
+    timestamp              timestamp,
+    CONSTRAINT kpi_fact_pk PRIMARY KEY (
+        campaign_id,
+        department_id,
+        family_category_id,
+        product_id,
+        promo_mechanic_id,
+        section_id,
+        sub_family_category_id,
+        timestamp
+    ),
+    FOREIGN KEY (
+        campaign_id
+    )
+    REFERENCES analytics.campaign (id),
+    FOREIGN KEY (
+        department_id
+    )
+    REFERENCES analytics.department (id),
+    FOREIGN KEY (
+        family_category_id
+    )
+    REFERENCES analytics.family_category (id),
+    FOREIGN KEY (
+        product_id
+     )
+    REFERENCES analytics.product (id),
+    FOREIGN KEY (
+        promo_mechanic_id
+    )
+    REFERENCES analytics.promo_mechanic (id),
+    FOREIGN KEY (
+        section_id
+    )
+    REFERENCES analytics.section (id),
+    FOREIGN KEY (
+        sub_family_category_id
+    )
+    REFERENCES analytics.sub_family_category (id)
+);
+
+-- Load data from csv files
+COPY analytics.promo_mechanic
+FROM '/data/promo_mechanic.csv' delimiter ',' CSV header;
+
+COPY analytics.section
+FROM '/data/section.csv' delimiter ',' CSV header;
+
+COPY analytics.sub_family_category
+FROM '/data/subfamily.csv' delimiter ',' CSV header;
+
+COPY analytics.supplier
+FROM '/data/supplier.csv' delimiter ',' CSV header;
+
+COPY analytics.campaign_type
+FROM '/data/campaign_type.csv' delimiter ',' CSV header;
+
+COPY analytics.department
+FROM '/data/department.csv' delimiter ',' CSV header;
+
+COPY analytics.family_category
+FROM '/data/family_category.csv' delimiter ',' CSV header;
+
+COPY analytics.campaign
+FROM '/data/campaign.csv' delimiter ',' CSV header;
+
+COPY analytics.product
+FROM '/data/product.csv' delimiter ',' CSV header;
+
+COPY analytics.kpi_fact
+FROM '/data/kpi_fact.csv' delimiter ',' CSV header;

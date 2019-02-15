@@ -78,6 +78,9 @@ app = Flask(__name__)
 # Configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = \
     os.getenv('SQLALCHEMY_DATABASE_URI', default='sqlite:////tmp/test.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+if app.debug:
+    app.config['SQLALCHEMY_ECHO'] = True
 
 app.config['BASIC_AUTH_USERNAME'] = \
     os.getenv('BASIC_AUTH_USERNAME', default='apiuser')

@@ -1,9 +1,8 @@
 FROM python:3.7.2-alpine3.9
 LABEL maintainer="Radoslav Sandov <rsandov@softserveinc.com>"
 
-RUN apk add --no-cache --virtual .build-deps gcc libc-dev \
-    && pip install poetry meinheld gunicorn \
-    && apk del .build-deps gcc libc-dev
+RUN apk add --no-cache gcc libc-dev postgresql-dev python3-dev musl-dev \
+    && pip install poetry meinheld gunicorn
 
 COPY ./docker/gunicorn_conf.py ./docker/entrypoint.sh /
 RUN chmod +x /entrypoint.sh && mkdir /app
@@ -15,9 +14,6 @@ COPY ./backend/pyproject.toml ./backend/poetry.lock /app/
 RUN poetry config settings.virtualenvs.create false && poetry install --no-dev
 
 COPY ./backend/app /app/app
-COPY ./backend/config/test.db /tmp/test.db
-# COPY ./backend/migrations/migrations.py /app/migrations.py
-# RUN python /app/migrations.py
 
 EXPOSE 80
 

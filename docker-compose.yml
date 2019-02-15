@@ -7,11 +7,7 @@ services:
       dockerfile: docker/Dockerfile.api
     container_name: api
     environment:
-      DB_HOST: postgres
-      DB_USER: postgres
-      DB_PORT: 5432
-      DB_PASSWORD: dbpassword
-      DB_SCHEMA: analytics
+      SQLALCHEMY_DATABASE_URI: 'postgresql+psycopg2://postgres:dbpassword@postgres:5432/postgres'
     ports:
       - '8080:80'
 
@@ -30,4 +26,6 @@ services:
     container_name: db
     environment:
       POSTGRES_PASSWORD: dbpassword
+    ports:
+      - '5432:5432'
 

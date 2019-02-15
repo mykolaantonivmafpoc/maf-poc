@@ -24,6 +24,7 @@ flask-swagger-ui = "^3.18.0"
 Flask-BasicAuth = "^0.2.0"
 marshmallow = "^3.0.0b8"
 apispec-webframeworks = "^0.3.0"
+psycopg2-binary = "^2.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"

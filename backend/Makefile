@@ -1,6 +1,8 @@
+DB_URI ?= 'postgresql+psycopg2://postgres:dbpassword@localhost:5432/postgres'
+
 .PHONY: run
 run:
-	FLASK_APP=app.run:app FLASK_ENV=development FLASK_RUN_PORT=8080 poetry run flask run
+	SQLALCHEMY_DATABASE_URI=$(DB_URI) FLASK_APP=app.run:app FLASK_ENV=development FLASK_RUN_PORT=8080 poetry run flask run
 
 .PHONY: install
 install:
