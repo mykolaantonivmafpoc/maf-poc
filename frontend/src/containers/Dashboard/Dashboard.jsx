@@ -1,7 +1,10 @@
 import React from 'react';
+import NavWrapper from '../NavWrapper';
 
 const Dashboard = () => (
-  <h1>Dashboard</h1>
+  <NavWrapper>
+    <h1>Dashboard</h1>
+  </NavWrapper>
 );
 
 export default Dashboard;

@@ -1,6 +1,7 @@
 import merge from 'lodash/merge';
 import { combineReducers } from 'redux';
 import login from './loginReducer';
+import navigation from './navigationReducer';
 
 import * as campaignConstants from '../constants/campaignConstants';
 import * as HATEOASConstants from '../constants/HATEOASConstants';
@@ -90,7 +91,8 @@ const rootReducer = combineReducers({
     }),
   }),
   entities,
-  login
+  login,
+  navigation
 });
 
 export default rootReducer;

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { loadAllCampaigns } from '../../actions/campaignActions';
 import DataGrid from '../../components/DataVisualization/DataGrid';
+import NavWrapper from '../NavWrapper';
 import { campaignListTableDef } from '../../config';
 
 import './Campaigns.css';
@@ -119,10 +120,10 @@ class Campaigns extends Component {
     const data = { ...campaignListTableDef, rows: this.genRows() };
 
     return (
-      <section>
-        <header><h1>{meta && meta.type || 'Loading...'}</h1></header>
+      <NavWrapper>
+        <header><h1>{meta && meta.type}</h1></header>
         <DataGrid data={data} className="campaigns-data-grid"/>
-      </section>
+      </NavWrapper>
     );
   }
 }

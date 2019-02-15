@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import CampaignBubbleChart from '../../components/DataVisualization/CampaignBubbleChart';
 import DataGrid from '../../components/DataVisualization/DataGrid';
 import { loadAllCampaigns, loadCampaign } from '../../actions/campaignActions';
+import NavWrapper from '../NavWrapper';
 import { productListTableDef } from '../../config';
 
 import './Campaign.css';
@@ -109,10 +110,10 @@ class Campaign extends Component {
   render() {
     const data = { ...productListTableDef, rows: this.genRows() };
     return (
-      <div>
+      <NavWrapper>
         <CampaignBubbleChart className="campaign-chart"/>
         <DataGrid data={data} className="campaign-data-grid"/>
-      </div>
+      </NavWrapper>
     );
   }
 }

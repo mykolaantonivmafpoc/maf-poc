@@ -1,9 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { shallow } from 'enzyme';
 import App from './App';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+describe('Login Component', () => {
+  const wrapper = shallow(<App />);
+
+  it('should render the form without throwing an error', () => {
+    expect(wrapper.find('form.form-signin')).toBeTruthy();
+  });
 });
