@@ -8,7 +8,7 @@
 
 table.data-grid thead th {
   border: none;
-  border-bottom: none;
+  border-bottom: 1px solid #e2e2e2;
 }
 
 .data-grid th:not(:first-child) {

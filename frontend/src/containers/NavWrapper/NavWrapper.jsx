@@ -37,7 +37,7 @@ const NavWrapper = ({
     />
     {navigation.filterShown ? <Filter hideFilter={hideFilter} /> : null}
     <section className="main-c">
-      <header>{children}</header>
+      {children}
     </section>
   </section>
 );

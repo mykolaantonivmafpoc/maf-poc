@@ -4,10 +4,10 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.2.1",
-    "highcharts": "^7.0.3",
-    "highcharts-more": "^0.1.7",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.1",
+    "highcharts": "^7.0.3",
+    "highcharts-more": "^0.1.7",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
     "normalizr": "^3.3.0",

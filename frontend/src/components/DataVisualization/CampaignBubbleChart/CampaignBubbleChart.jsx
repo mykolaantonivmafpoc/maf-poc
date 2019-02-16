@@ -1,16 +1,22 @@
 import React from 'react';
 import Highcharts from 'highcharts';
 import HighchartsMore from 'highcharts-more';
+import { meanBy } from 'lodash';
 import './CampaignBubbleChart.css';
 import PropTypes from 'prop-types';
 
 class CampaignBubbleChart extends React.Component {
   static propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    data: PropTypes.arrayOf(PropTypes.shape({})),
+    x: PropTypes.string.isRequired,
+    y: PropTypes.string.isRequired,
+    z: PropTypes.string.isRequired
   }
 
   static defaultProps = {
-    className: ''
+    className: '',
+    data: []
   };
 
   constructor(props) {
@@ -18,7 +24,7 @@ class CampaignBubbleChart extends React.Component {
     HighchartsMore(Highcharts);
   }
 
-  componentDidMount() {
+  componentDidUpdate() {
     const chartData = this.getChartData();
 
     this.generateChart(chartData);
@@ -42,7 +48,8 @@ class CampaignBubbleChart extends React.Component {
     };
 
     settings.chart_markerSettings = {
-      lineColor: 'transparent',
+      lineColor: '#ffffffff',
+      lineWidth: 2,
       states: {
         hover: {
           lineColor: '#FFFFFFFF',
@@ -56,13 +63,14 @@ class CampaignBubbleChart extends React.Component {
     };
 
     settings.getPlotSettingsObj = (value) => {
-      return {
+      const out = {
         color: '#2f2e32',
         dashStyle: 'dot',
         width: 2,
         value,
         zIndex: 3
       };
+      return out;
     };
 
     settings.legend = {
@@ -73,40 +81,57 @@ class CampaignBubbleChart extends React.Component {
       itemStyle: settings.chart_legedFontStyle
     };
 
-    settings.color = ['#8ac753FF', '#1fa5c6FF', '#dfdfdfFF', '#4a4a4aFF'];
+    settings.color = ['#1183acc0', '#cfcfcfc0', '#2b2b2bc0', '#66ad32c0'];
 
-    settings.halo = {
+    settings.halo = (color) => ({
       attributes: {
-        fill: '#8ac753FF',
-        stroke: '#8ac753FF',
+        fill: color,
+        stroke: color,
         lineWidth: 15,
         opacity: 1
       }
-    };
+    });
 
     return settings;
   }
 
   getChartData = () => {
-    const data = {
-      series: [],
-      xPlot: 70,
-      yPlot: 90
+    const { data: products, x, y, z } = this.props;
+    const avgX = meanBy(products, p => {
+      const X = parseFloat(p[x]);
+      return Number.isNaN(X) ? 0 : X;
+    });
+    const avgY = meanBy(products, p => {
+      const Y = parseFloat(p[y]);
+      return Number.isNaN(Y) ? 0 : Y;
+    });
+    const series = [[], [], [], []];
+
+    const getQadrant = product => {
+      let qadrant = 0;
+      if (product[x] > avgX && product[y] > avgY) { qadrant = 0; }
+      if (product[x] < avgX && product[y] > avgY) { qadrant = 1; }
+      if (product[x] < avgX && product[y] < avgY) { qadrant = 2; }
+      if (product[x] > avgX && product[y] < avgY) { qadrant = 3; }
+      return qadrant;
     };
 
-    data.series[0] = [
-      { x: 95, y: 95, z: 13.8, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 },
-      { x: 86.5, y: 102.9, z: 14.7, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 },
-      { x: 80.8, y: 91.5, z: 15.8, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 },
-      { x: 80.4, y: 102.5, z: 12, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 }
-    ];
+    products.forEach(product => {
+      series[getQadrant(product)].push({
+        ...product,
+        x: parseFloat(product[x]),
+        y: parseFloat(product[y]),
+        z: parseFloat(product[z])
+      });
+    });
 
-    data.series[1] = [
-      { x: 80.3, y: 86.1, z: 11.8, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 },
-      { x: 78.4, y: 70.1, z: 16.6, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 },
-      { x: 74.2, y: 68.5, z: 14.5, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 },
-      { x: 73.5, y: 83.1, z: 10, id: '1198937', name: 'Coca-Cola', description: 'Carbonated soft drink', suplierId: '558', totalSales: '608608', incrMargin: 7497.6201 }
-    ];
+    const data = {
+      series,
+      xPlot: avgX,
+      yPlot: avgY,
+      xTitle: x || '',
+      yTitle: y || ''
+    };
 
     return data;
   }
@@ -117,7 +142,7 @@ class CampaignBubbleChart extends React.Component {
     Highcharts.chart('chartWrapper', {
       chart: {
         type: 'bubble',
-        plotBorderWidth: 1,
+        plotBorderWidth: 0,
         zoomType: 'xy'
       },
 
@@ -129,14 +154,14 @@ class CampaignBubbleChart extends React.Component {
 
       xAxis: {
         title: {
-          text: 'INCR MARGIN',
+          text: data.xTitle.toUpperCase(),
           style: styleSettings.chart_titleStyle
         },
         gridLineWidth: 1,
         startOnTick: false,
         endOnTick: false,
         maxPadding: -0.2,
-        width: '95%',
+        width: '100%',
         labels: {
           format: '{value}'
         },
@@ -145,7 +170,7 @@ class CampaignBubbleChart extends React.Component {
 
       yAxis: {
         title: {
-          text: 'INCR TRAFFIC',
+          text: data.yTitle.toUpperCase(),
           style: styleSettings.chart_titleStyle
         },
         gridLineWidth: 1,
@@ -155,7 +180,13 @@ class CampaignBubbleChart extends React.Component {
           format: '{value}'
         },
         maxPadding: 0.2,
-        plotLines: [styleSettings.getPlotSettingsObj(data.yPlot)]
+        plotLines: [{
+          value: 51685.48074016859,
+          color: '#2f2e32',
+          dashStyle: 'dot',
+          width: 2
+        }]
+        // plotLines: [styleSettings.getPlotSettingsObj(data.yPlot)]
       },
 
       colors: styleSettings.color,
@@ -166,7 +197,7 @@ class CampaignBubbleChart extends React.Component {
           marker: styleSettings.chart_markerSettings,
           states: {
             hover: {
-              halo: styleSettings.halo
+              halo: styleSettings.halo(styleSettings.color[0])
             }
           },
           data: data.series[0]
@@ -174,7 +205,32 @@ class CampaignBubbleChart extends React.Component {
         {
           name: 'Ipsum',
           marker: styleSettings.chart_markerSettings,
+          states: {
+            hover: {
+              halo: styleSettings.halo(styleSettings.color[1])
+            }
+          },
           data: data.series[1]
+        },
+        {
+          name: 'Ipsum',
+          marker: styleSettings.chart_markerSettings,
+          states: {
+            hover: {
+              halo: styleSettings.halo(styleSettings.color[2])
+            }
+          },
+          data: data.series[2]
+        },
+        {
+          name: 'Ipsum',
+          marker: styleSettings.chart_markerSettings,
+          states: {
+            hover: {
+              halo: styleSettings.halo(styleSettings.color[3])
+            }
+          },
+          data: data.series[3]
         }
       ],
 
@@ -187,27 +243,27 @@ class CampaignBubbleChart extends React.Component {
         pointFormat: `<tbody>
                         <tr>
                             <td class="tooltip-label">Product ID:</td>
-                            <td>{point.id}</td>
+                            <td>{point.product_id}</td>
                         </tr>
                         <tr>
                             <td class="tooltip-label">Product Name:</td>
-                            <td>{point.name}</td>
+                            <td>{point.product_name}</td>
                         </tr>
                         <tr>
-                            <td class="tooltip-label">Description:</td>
-                            <td>{point.description}</td>
+                            <td class="tooltip-label">Department Name:</td>
+                            <td>{point.department_name}</td>
                         </tr>
                         <tr>
                             <td class="tooltip-label">Suplier ID:</td>
-                            <td>{point.suplierId}</td>
+                            <td>{point.supplier_name}</td>
                         </tr>
                         <tr>
                             <td class="tooltip-label">Total Sales:</td>
-                            <td>{point.totalSales}</td>
+                            <td>{point.total_sales}</td>
                         </tr>
                         <tr>
                             <td class="tooltip-label">Incr Margin:</td>
-                            <td>{point.incrMargin}</td>
+                            <td>{point.incr_margin}</td>
                         </tr>
                       </tbody>`,
         footerFormat: '</table>',
@@ -217,10 +273,10 @@ class CampaignBubbleChart extends React.Component {
   }
 
   render() {
-    const { className } = this.props;
+    const { data, x, y, z, ...divProps } = this.props;
 
     return (
-      <div id="chartWrapper" className={className} />
+      <div id="chartWrapper" {...divProps} />
     );
   }
 }

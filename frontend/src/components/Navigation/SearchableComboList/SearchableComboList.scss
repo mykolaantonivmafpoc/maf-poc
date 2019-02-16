@@ -1,0 +1,60 @@
+.searchable-combo-list {
+  .search-wrapper {
+    border: 1px solid #dfdfdf;
+    margin: 15px;
+  }
+
+  .search-input {
+    height: 40px;
+    border: none;
+
+    &::placeholder {
+      color: #8d8d8d;
+      font-size: 12px;
+      transform: translate(0, -3px);
+    }
+  }
+
+  .search-icon {
+    height: 100%;
+    width: 50px;
+    background-image: url('./search.svg');
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  .clear-button {
+    height: 100%;
+    width: 50px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .combo-list {
+    margin-top: 10px;
+    border-radius: 0;
+    height: 200px;
+    width: calc(100% - #{10px});
+    overflow: auto;
+  }
+
+  .list-group {
+    display: block;
+  }
+
+  .list-group-item {
+    outline: none;
+    height: 40px;
+    padding: 12px 30px;
+    border-radius: 0 !important;
+    border: none;
+    line-height: 16px;
+
+    &.active {
+      background-color: #d6eff5;
+      color: #2f2e32;
+    }
+  }
+}

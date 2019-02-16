@@ -3,10 +3,16 @@
   box-shadow: 0 0 10px 0 #0003;
   background-color: #fff;
   border-collapse: unset;
+  line-height: 1.5em;
 }
 
 .tooltip-label {
   text-align: right;
-  padding-right: 25px;
-  font-weight: 600;
+  padding-right: 15px;
+  color: #8d8d8d;
+  line-height: 1.5em;
+}
+
+#chartWrapper {
+  width: 100%;
 }

@@ -44,9 +44,9 @@ class Root extends Component {
           />
           <Route path="/login" component={Login} />
 
-          <PrivateRoute path="/dashboard" component={Dashboard}/>
-          <PrivateRoute path="/campaigns" component={Campaigns}/>
-          <PrivateRoute path="/campaign/:id" component={Campaign}/>
+          <PrivateRoute name="dashboard" path="/dashboard" component={Dashboard}/>
+          <PrivateRoute name="campaigns" path="/campaigns" component={Campaigns}/>
+          <PrivateRoute name="campaign" path="/campaign/:id" component={Campaign}/>
         </section>
       </Provider>
     );

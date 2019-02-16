@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { loadAllCampaigns } from '../../actions/campaignActions';
 import DataGrid from '../../components/DataVisualization/DataGrid';
+import PageHeader from '../../components/Navigation/PageHeader';
 import NavWrapper from '../NavWrapper';
 import { campaignListTableDef } from '../../config';
 
@@ -121,7 +122,7 @@ class Campaigns extends Component {
 
     return (
       <NavWrapper>
-        <header><h1>{meta && meta.type}</h1></header>
+        <PageHeader pageTitle={meta && meta.type}/>
         <DataGrid data={data} className="campaigns-data-grid"/>
       </NavWrapper>
     );

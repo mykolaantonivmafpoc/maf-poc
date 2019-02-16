@@ -1,0 +1,40 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  padding: 0 30px;
+  background-color: #fafafa;
+
+  .title-wrapper {
+    flex: 1;
+  }
+
+  .largeTitle {
+    font-size: 23px;
+    font-weight: 600;
+    color: #2f2e32;
+  }
+
+  .small-title {
+    font-size: 15px;
+    color: #8d8d8d;
+    text-transform: uppercase;
+  }
+
+  .button-search {
+    height: 30px;
+    width: 30px;
+    opacity: 0.8;
+    border: 0;
+    background-color: transparent;
+    background-image: url('./search.svg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    transition: opacity 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

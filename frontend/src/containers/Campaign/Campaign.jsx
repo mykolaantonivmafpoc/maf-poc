@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CampaignBubbleChart from '../../components/DataVisualization/CampaignBubbleChart';
 import DataGrid from '../../components/DataVisualization/DataGrid';
 import { loadAllCampaigns, loadCampaign } from '../../actions/campaignActions';
 import NavWrapper from '../NavWrapper';
+import SettingsPopup from '../../components/DataVisualization/SettingsPopup';
+import PageHeader from '../../components/Navigation/PageHeader';
+import CampaignsListFilter from '../../components/Navigation/CampaignsListFilter';
 import { productListTableDef } from '../../config';
 
 import './Campaign.css';
@@ -14,13 +18,24 @@ class Campaign extends Component {
     products: PropTypes.arrayOf(PropTypes.shape([])),
     meta: PropTypes.shape({ type: PropTypes.string }),
     campaign: PropTypes.shape({}),
-    match: PropTypes.shape({}).isRequired
+    match: PropTypes.shape({}).isRequired,
+    campaigns: PropTypes.arrayOf(PropTypes.shape({})),
+    campaignsPageTitle: PropTypes.string,
+    history: PropTypes.shape({}).isRequired
   };
 
   static defaultProps = {
     meta: { type: 'Campaign' },
     products: [],
-    campaign: {}
+    campaign: {},
+    campaigns: [],
+    campaignsPageTitle: 'Campaigns'
+  }
+
+  state = {
+    x: 'incr_margin',
+    y: 'incr_tse',
+    z: 'total_sales'
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -46,42 +61,46 @@ class Campaign extends Component {
 
   constructor() {
     super();
-    this.state = {};
+    this.setGraphAxes = this.setGraphAxes.bind(this);
+    this.onFilterChange = this.onFilterChange.bind(this);
+  }
+
+  onFilterChange(id) {
+    const { history } = this.props;
+    if (id > -1) {
+      const path = document.location.pathname.split('/');
+      path.pop();
+      path.push(id);
+      history.push({
+        pathname: path.join('/'),
+        search: ''
+      });
+    }
+  }
+
+  setGraphAxes(coords) {
+    this.setState({
+      ...coords
+    });
   }
 
   genRows = () => {
     const { products } = this.props;
-    return products.map(product => {
-      // department_id: 14
-      // department_name: "Department N"
-      // family_category_id: 11
-      // family_category_name: "Family category K"
-      // product_id: 1
-      // product_name: "Product A"
-      // section_id: 17
-      // section_name: "Section Q"
-      // sub_family_category_id: 19
-      // sub_family_category_name: "Sub family category S"
-      // supplier_id: 18
-      // supplier_name: "Supplier R"
-      // timestamp: "Sat, 13 Feb 2016 00:00:00 GMT"
-
-      return {
-        campaign: { value: <this.General id={product.product_id} name={product.product_name}/>, className: 'cell-campaign' },
-        totalSales: { value: product.total_sales, className: 'cell-sales' },
-        volume: { value: product.volume_sold, className: 'cell-volume' },
-        sales: <this.ValuePercentPare label="Sales" value={product.incr_sales} percent={product.incr_sales_per} />,
-        margin: <this.ValuePercentPare label="Margin" value={product.incr_margin} percent={product.incr_margin_per} />,
-        traffic: <this.ValuePercentPare label="Traffic" value={product.incr_traffic} percent={product.incr_traffic_per} />,
-        basket: <this.ValuePercentPare label="Basket" value={product.incr_basket} percent={product.incr_basket_per} />,
-        tse: <this.ValuePercentPare label="TSE" value={product.incr_tse} percent={product.incr_tse_per} />,
-        promo: product.promo_price,
-        slash: product.slash_price,
-        cosnt: product.cost_price,
-        depth: product.ipromo_depth,
-        mechanics: 'null'
-      };
-    });
+    return products.map(product => ({
+      campaign: { value: <this.General id={product.product_id} name={product.product_name}/>, className: 'cell-campaign' },
+      totalSales: { value: product.total_sales, className: 'cell-sales' },
+      volume: { value: product.volume_sold, className: 'cell-volume' },
+      sales: <this.ValuePercentPare label="Sales" value={product.incr_sales} percent={product.incr_sales_per} />,
+      margin: <this.ValuePercentPare label="Margin" value={product.incr_margin} percent={product.incr_margin_per} />,
+      traffic: <this.ValuePercentPare label="Traffic" value={product.incr_traffic} percent={product.incr_traffic_per} />,
+      basket: <this.ValuePercentPare label="Basket" value={product.incr_basket} percent={product.incr_basket_per} />,
+      tse: <this.ValuePercentPare label="TSE" value={product.incr_tse} percent={product.incr_tse_per} />,
+      promo: product.promo_price,
+      slash: product.slash_price,
+      cosnt: product.cost_price,
+      depth: product.ipromo_depth,
+      mechanics: 'null'
+    }));
   }
 
   ValuePercentPare = (props) => {
@@ -109,9 +128,25 @@ class Campaign extends Component {
 
   render() {
     const data = { ...productListTableDef, rows: this.genRows() };
+    const { products, campaign, campaigns, campaignsPageTitle } = this.props;
+    const { x, y, z } = this.state;
+
+    const filters = {
+      visible: true,
+      content: (
+        <CampaignsListFilter
+          onFilterChange={this.onFilterChange}
+          campaigns={campaigns}
+          selectedCampaignName={campaign.name}
+        />
+      )
+    };
+
     return (
       <NavWrapper>
-        <CampaignBubbleChart className="campaign-chart"/>
+        <PageHeader pageTitle={campaignsPageTitle} filters={filters}/>
+        <SettingsPopup kpi={campaign.kpi} onChange={this.setGraphAxes} x={x} y={y}/>
+        <CampaignBubbleChart data={products} x={x} y={y} z={z} className="campaign-chart"/>
         <DataGrid data={data} className="campaign-data-grid"/>
       </NavWrapper>
     );
@@ -130,6 +165,8 @@ const mapStateToProps = (state) => {
       },
       campaignList: {
         isFetching: isFetchingList,
+        content: cmapaignList,
+        meta: compaignListMeta
       },
       singleCampaign: {
         content: productList,
@@ -141,12 +178,14 @@ const mapStateToProps = (state) => {
   return {
     products: productList && productList.map(id => products[id]),
     campaign: campaigns[meta],
+    campaigns: cmapaignList && cmapaignList.map(id => campaigns[id]),
+    campaignsPageTitle: compaignListMeta && compaignListMeta.type,
     isFetchingList,
     isFetchingOptions
   };
 };
 
-export default connect(mapStateToProps, {
+export default withRouter(connect(mapStateToProps, {
   loadAllCampaigns,
   loadCampaign
-})(Campaign);
+})(Campaign));
