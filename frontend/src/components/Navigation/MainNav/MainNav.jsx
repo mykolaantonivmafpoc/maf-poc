@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import './MainNav.scss';
 import cancel from './cancel-white.svg';
 
-const MainNav = ({ removeMainNav, showMainNav, hideMainNav, navShown }) => (
+const MainNav = ({ removeMainNav, showMainNav, hideMainNav, navShown, logout }) => (
   <aside
     className={`left-menu-wrapper ${
       navShown === undefined ? 'nav-hidden' : 'nav-shown'
@@ -31,7 +31,9 @@ const MainNav = ({ removeMainNav, showMainNav, hideMainNav, navShown }) => (
         <Link to="/campaigns">User Settigns</Link>
       </li>
       <li className="nav-item">
-        <Link to="/campaigns">Log out</Link>
+        <div onClick={logout}>
+        Logout
+        </div>
       </li>
     </ul>
 
@@ -53,7 +55,8 @@ MainNav.propTypes = {
   removeMainNav: PropTypes.func.isRequired,
   showMainNav: PropTypes.func.isRequired,
   hideMainNav: PropTypes.func.isRequired,
-  navShown: PropTypes.bool
+  navShown: PropTypes.bool,
+  logout: PropTypes.func.isRequired
 };
 
 MainNav.defaultProps = {

@@ -26,5 +26,6 @@ export const authenticate = (user) => (dispatch) => {
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem('user');
+  window.location.replace('/');
   return dispatch({ type: LOGOUT });
 };
