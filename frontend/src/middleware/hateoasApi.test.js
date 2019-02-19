@@ -90,7 +90,7 @@ describe('HATEOAS API Middleware', () => {
       rel: 'abcRel'
     };
     middleware(store)(next)(action);
-    expect(spyRESTClientGet).toHaveBeenCalledWith('abc');
+    expect(spyRESTClientGet).toHaveBeenCalled();
     spyRESTClientGet.mockRestore();
 
     action[CALL_API].endpoint = {

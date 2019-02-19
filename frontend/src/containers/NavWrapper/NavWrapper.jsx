@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import * as navigationActions from '../../actions/navigationActions';
+import { loadCampaign } from '../../actions/campaignActions';
 import { logout } from '../../actions/userActions';
 
 import Filter from '../../components/Navigation/Filter';
@@ -19,6 +20,8 @@ const NavWrapper = ({
   hideMainNav,
   showMainNav,
   removeMainNav,
+  kpi_options,
+  loadCampaign: lc,
   logout: logoutFn
 }) => (
   <section>
@@ -39,7 +42,9 @@ const NavWrapper = ({
       hideMainNav={hideMainNav}
       logout={logoutFn}
     />
-    {navigation.filterShown ? <Filter hideFilter={hideFilter} /> : null}
+    {navigation.filterShown
+      ? <Filter hideFilter={hideFilter} options={kpi_options} filterAction={lc}/>
+      : null}
     <section className="main-c">
       {children}
     </section>
@@ -47,9 +52,38 @@ const NavWrapper = ({
 );
 
 const mapStateToProps = state => {
-  const { navigation } = state;
+  const {
+    navigation,
+    data: {
+      singleCampaign: {
+        meta: campaignMeta,
+      },
+    },
+    entities: {
+      campaigns,
+      department,
+      family_category,
+      section,
+      sub_family_category
+    }
+  } = state;
 
-  return { navigation, logout };
+  const options = { department, family_category, section, sub_family_category };
+  const kpi_options = {};
+
+  const kpi_options_row = (campaigns && campaignMeta && campaigns[campaignMeta].kpi_options) || {};
+  Object.keys(kpi_options_row).forEach(option => {
+    if (options[option]) {
+      kpi_options[option] = [...new Set(kpi_options_row[option])].map(id => {
+        return options[option][id];
+      });
+    }
+  });
+
+  return {
+    navigation,
+    kpi_options
+  };
 };
 
 NavWrapper.propTypes = {
@@ -65,10 +99,16 @@ NavWrapper.propTypes = {
   showMainNav: PropTypes.func.isRequired,
   removeMainNav: PropTypes.func.isRequired,
   hideMainNav: PropTypes.func.isRequired,
+  kpi_options: PropTypes.shape({}),
+  loadCampaign: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired
+};
+
+NavWrapper.defaultProps = {
+  kpi_options: {}
 };
 
 export default connect(
   mapStateToProps,
-  { ...navigationActions, logout }
+  { ...navigationActions, loadCampaign, logout }
 )(NavWrapper);

@@ -1,4 +1,4 @@
-import merge from 'lodash/merge';
+import { merge } from 'lodash';
 import { combineReducers } from 'redux';
 import login from './loginReducer';
 import navigation from './navigationReducer';

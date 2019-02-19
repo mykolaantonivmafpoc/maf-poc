@@ -34,9 +34,9 @@ const validateAction = (action) => {
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-const callApi = async (endpoint, schema, verb) => {
+const callApi = async (endpoint, schema, verb, filter) => {
   let out = null;
-  const response = await RESTClient[verb](endpoint);
+  const response = await RESTClient[verb](endpoint, undefined, filter);
   if (response && response.error) {
     throw response;
   }
@@ -89,7 +89,7 @@ export default store => next => action => {
     return next(action);
   }
 
-  const { endpoint, schema, types } = validateAction(unwrappedAction);
+  const { endpoint, schema, types, filter } = validateAction(unwrappedAction);
   const url = getHATEOEUrl(endpoint, store.getState());
 
   const actionWith = data => {
@@ -101,7 +101,7 @@ export default store => next => action => {
   const { requestType, successType, failureType } = types;
   next(actionWith({ type: requestType }));
 
-  return callApi(url, schema, 'get').then(
+  return callApi(url, schema, 'get', filter).then(
     response => next(actionWith({
       response,
       type: successType

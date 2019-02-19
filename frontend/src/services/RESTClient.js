@@ -48,9 +48,11 @@ class RestClient {
 
   qsGenerate(getParams = {}) {
     let out = '';
+    let prefix = '?';
     const { qsDelim, qsJoin } = this.config;
     Object.keys(getParams).forEach((key) => {
-      out += `${key}${qsJoin}${getParams[key]}${qsDelim}`;
+      out += `${prefix}${key}${qsJoin}${getParams[key]}`;
+      prefix = qsDelim;
     });
     return out;
   }
