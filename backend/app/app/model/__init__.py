@@ -1,5 +1,6 @@
 from .. import app, basic_auth, db, ma, spec, dt, PrimaryKeyConstraint # NOQA
 from marshmallow import fields # NOQA
+from .. import request
 
 
 def create_frame():
@@ -27,6 +28,112 @@ kpi_list = [
     'incr_basket_per',
     'incr_tse_per'
 ]
+
+
+def buildArgumentFilter():
+    argsFilter = []
+
+    filter_kpi_ids = {
+        'department': 'department_id',
+        'family_category': 'family_category_id',
+        'sub_family_category': 'sub_family_category_id',
+        'section': 'section_id',
+        'date_from': 'date_from',
+        'date_to': 'date_from',
+    }
+
+    date_from = request.args.get('date_from', default=False)
+    date_to = request.args.get('date_to', default=False)
+
+    if False is not date_from and False is not date_to:
+        argsFilter.append(KpiFact.timestamp.between(date_from, date_to))
+
+    for k, v in filter_kpi_ids.items():
+        data = request.args.getlist(k)
+        if data:
+            argsFilter.append(getattr(KpiFact, v).in_(tuple(map(int, data))))
+
+    return argsFilter
+
+
+def buildMetaOptionsQuery(model, query_args, argsFilter):
+
+    columns = [
+        KpiFact.timestamp.label('timestamp'),
+        Product.id.label('product_id'),
+        Product.name.label('product_name'),
+        Supplier.id.label('supplier_id'),
+        Supplier.name.label('supplier_name'),
+        Section.id.label('section_id'),
+        Section.name.label('section_name'),
+        FamilyCategory.id.label('family_category_id'),
+        FamilyCategory.name.label('family_category_name'),
+        SubFamilyCategory.id.label('sub_family_category_id'),
+        SubFamilyCategory.name.label('sub_family_category_name'),
+        Department.id.label('department_id'),
+        Department.name.label('department_name'),
+    ]
+
+    query_args = query_args + columns
+
+    return model.query(*query_args)\
+        .join(Product, Product.id == KpiFact.product_id)\
+        .join(Supplier, Supplier.id == Product.supplier_id)\
+        .join(Department, Department.id == KpiFact.department_id)\
+        .join(Section, Section.id == KpiFact.section_id)\
+        .join(FamilyCategory,
+              FamilyCategory.id == KpiFact.family_category_id)\
+        .join(SubFamilyCategory,
+              SubFamilyCategory.id == KpiFact.sub_family_category_id)\
+        .filter(*argsFilter)\
+        .group_by(*columns).all()
+
+
+def buildMetaOptions(meta_options_query):
+
+    meta_options_exanded = {}
+
+    meta_options = [
+            # 'campaign',
+            # 'product',
+            # 'supplier',
+            # 'promo_mechanic',
+            # 'campaign_kpi_metric',
+            'department',
+            'section',
+            'family_category',
+            'sub_family_category',
+            'timestamp',
+        ]
+
+    for i in meta_options:
+
+        if i not in meta_options_exanded:
+            if 'timestamp' == i:
+                meta_options_exanded[i] = []
+            else:
+                meta_options_exanded[i] = {}
+
+        kpi_opts = meta_options_exanded
+
+        for x in meta_options_query:
+
+            if 'timestamp' == i:
+
+                if getattr(x, i) not in kpi_opts[i]:
+                    kpi_opts[i].append(getattr(x, i))
+                continue
+
+            id_key = getattr(x, str(i + '_id'))
+            name_key = getattr(x, str(i + '_name'))
+
+            if id_key not in kpi_opts[i]:
+                kpi_opts[i][id_key] = {
+                    "id": id_key,
+                    "name": name_key,
+                }
+
+    return meta_options_exanded
 
 
 class BaseModel():

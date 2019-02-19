@@ -1,16 +1,18 @@
 from .. import app, spec, basic_auth # NOQA
-from .. import db, func, url_for, jsonify, request
-from ..model import kpi_list, create_frame # NOQA
+from .. import db, func, url_for, jsonify, request # NOQA
+from ..model import kpi_list, buildMetaOptionsQuery # NOQA
+from ..model import create_frame, buildMetaOptions # NOQA
+from ..model import buildArgumentFilter # NOQA
 from ..model import CampaignType # NOQA
-from ..model import Campaign
-from ..model import Product
-from ..model import Supplier
-from ..model import Department
-from ..model import Section
-from ..model import FamilyCategory
-from ..model import SubFamilyCategory
+from ..model import Campaign # NOQA
+from ..model import Product # NOQA
+from ..model import Supplier # NOQA
+from ..model import Department # NOQA
+from ..model import Section # NOQA
+from ..model import FamilyCategory # NOQA
+from ..model import SubFamilyCategory # NOQA
 from ..model import PromoMechanic # NOQA
-from ..model import KpiFact
+from ..model import KpiFact # NOQA
 
 
 @app.route('/v1/Campaigns', methods=['GET'])
@@ -30,6 +32,8 @@ def listCampaign():
 
     frame['meta']['type'] = 'Campaigns'
     frame['meta']['kpis'] = kpi_list
+    frame['meta']['kpi_options'] = {}
+    argsFilter = buildArgumentFilter()
 
     ml = Campaign.query.all()
     content = [
@@ -48,7 +52,7 @@ def listCampaign():
                 )
                 for j in kpi_list for y in db.session.query(
                     func.sum(getattr(KpiFact, j)).label(j)
-                ).filter_by(campaign_id=x.id)
+                ).filter(*argsFilter + [KpiFact.campaign_id == x.id])
             },
             '_links': {
                 'self': url_for('listCampaignItem', id=x.id),
@@ -57,8 +61,17 @@ def listCampaign():
         } for x in ml
     ]
 
+    frame['meta']['kpi_options'] = buildMetaOptions(
+        buildMetaOptionsQuery(
+            model=db.session,
+            query_args=[],
+            argsFilter=argsFilter
+        )
+    )
+
     for x in content:
         kpis = x['kpis']
+
         del x['kpis']
         elem = {**x, **kpis} # NOQA
         frame['content'].append(elem)
@@ -94,28 +107,6 @@ def listCampaignItem(id):
         'id': id
     }
 
-    argsFilter = []
-
-    filter_kpi_ids = {
-        'department': 'department_id',
-        'family_category': 'family_category_id',
-        'sub_family_category': 'sub_family_category_id',
-        'section': 'section_id',
-        'date_from': 'date_from',
-        'date_to': 'date_from',
-    }
-
-    date_from = request.args.get('date_from', default=False)
-    date_to = request.args.get('date_to', default=False)
-
-    if False is not date_from and False is not date_to:
-        argsFilter.append(KpiFact.timestamp.between(date_from, date_to))
-
-    for k, v in filter_kpi_ids.items():
-        data = request.args.getlist(k)
-        if data:
-            argsFilter.append(getattr(KpiFact, v).in_(tuple(map(int, data))))
-
     ml = Campaign.query.filter_by(**args).first()
 
     frame['meta']['type'] = 'Campaign'
@@ -127,43 +118,17 @@ def listCampaignItem(id):
     frame['meta']['date_from'] = ml.date_from
     frame['meta']['date_to'] = ml.date_to
 
-    columns = [
-        KpiFact.product_id.label('product_id'),
-        Product.name.label('product_name'),
-        KpiFact.product_id.label('product_id'),
-        Product.name.label('product_name'),
-        Product.supplier_id.label('supplier_id'),
-        Supplier.name.label('supplier_name'),
-        KpiFact.department_id.label('department_id'),
-        Department.name.label('department_name'),
-        KpiFact.section_id.label('section_id'),
-        Section.name.label('section_name'),
-        KpiFact.family_category_id.label('family_category_id'),
-        FamilyCategory.name.label('family_category_name'),
-        KpiFact.sub_family_category_id.label('sub_family_category_id'),
-        SubFamilyCategory.name.label('sub_family_category_name'),
-        KpiFact.timestamp.label('timestamp')
-    ]
-
     aggregates = [
         func.sum(getattr(KpiFact, j)).label(j) for j in kpi_list
     ]
 
-    query_args = columns + aggregates
-
     if hasattr(ml, 'kpi_fact'):
 
-        meta_options_query = db.session.query(*query_args)\
-            .join(Product, Product.id == KpiFact.product_id)\
-            .join(Supplier, Supplier.id == Product.supplier_id)\
-            .join(Department, Department.id == KpiFact.department_id)\
-            .join(Section, Section.id == KpiFact.section_id)\
-            .join(FamilyCategory,
-                  FamilyCategory.id == KpiFact.family_category_id)\
-            .join(SubFamilyCategory,
-                  SubFamilyCategory.id == KpiFact.sub_family_category_id)\
-            .filter(*argsFilter)\
-            .group_by(*columns).all()
+        meta_options_query = buildMetaOptionsQuery(
+            model=db.session,
+            query_args=aggregates,
+            argsFilter=buildArgumentFilter()
+        )
 
         frame['content'] = [
             {
@@ -199,21 +164,6 @@ def listCampaignItem(id):
             } for x in meta_options_query
         ]
 
-        meta_options = [
-            # 'campaign',
-            # 'product',
-            # 'supplier',
-            'department',
-            'section',
-            'family_category',
-            'sub_family_category',
-            'timestamp',
-            # 'promo_mechanic',
-            # 'campaign_kpi_metric'
-        ]
-
-        frame['meta']['kpi_options'] = {}
-
         frame['meta']['kpi'] = {
             j: (
                 float(getattr(y, j)) if getattr(y, j) is not None else 0
@@ -224,28 +174,7 @@ def listCampaignItem(id):
             ).filter_by(campaign_id=id)
         }
 
-        for i in meta_options:
-            if i not in frame['meta']['kpi_options']:
-                if 'timestamp' == i:
-                    frame['meta']['kpi_options'][i] = []
-                else:
-                    frame['meta']['kpi_options'][i] = {}
-
-            kpi_opts = frame['meta']['kpi_options']
-
-            for x in meta_options_query:
-
-                if 'timestamp' == i:
-
-                    if getattr(x, i) not in kpi_opts[i]:
-                        kpi_opts[i].append(getattr(x, i))
-                    continue
-
-                if getattr(x, i + '_id') not in kpi_opts[i]:
-                    kpi_opts[i][getattr(x, i + '_id')] = {
-                        "id": getattr(x, i + '_id'),
-                        "name": getattr(x, i + '_name'),
-                    }
+        frame['meta']['kpi_options'] = buildMetaOptions(meta_options_query)
 
     frame['_links'] = {
         'self': url_for('listCampaignItem', **args),
