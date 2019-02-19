@@ -4,6 +4,7 @@ import HighchartsMore from 'highcharts-more';
 import { meanBy } from 'lodash';
 import './CampaignBubbleChart.css';
 import PropTypes from 'prop-types';
+import { ChartConfig, ChartTooltip, getOneSeriesConfig } from './ChartConfig';
 
 class CampaignBubbleChart extends React.Component {
   static propTypes = {
@@ -26,73 +27,7 @@ class CampaignBubbleChart extends React.Component {
 
   componentDidUpdate() {
     const chartData = this.getChartData();
-
-    this.generateChart(chartData);
-  }
-
-  getChartStyleSettings = () => {
-    const settings = {};
-    const FONT_FAMILY = 'OpenSans';
-
-    settings.chart_titleStyle = {
-      color: '#8d8d8d',
-      fontSize: 12,
-      fontFamily: FONT_FAMILY
-    };
-
-    settings.chart_legedFontStyle = {
-      color: '#404040',
-      fontSize: 10,
-      fontFamily: FONT_FAMILY,
-      fontWeight: 100
-    };
-
-    settings.chart_markerSettings = {
-      lineColor: '#ffffffff',
-      lineWidth: 2,
-      states: {
-        hover: {
-          lineColor: '#FFFFFFFF',
-          lineWidth: 2,
-          halo: {
-            enabled: false,
-            size: 300
-          }
-        }
-      }
-    };
-
-    settings.getPlotSettingsObj = (value) => {
-      const out = {
-        color: '#2f2e32',
-        dashStyle: 'dot',
-        width: 2,
-        value,
-        zIndex: 3
-      };
-      return out;
-    };
-
-    settings.legend = {
-      layout: 'horizontal',
-      align: 'center',
-      verticalAlign: 'top',
-      backgroundColor: '#FFFFFF00',
-      itemStyle: settings.chart_legedFontStyle
-    };
-
-    settings.color = ['#1183acc0', '#cfcfcfc0', '#2b2b2bc0', '#66ad32c0'];
-
-    settings.halo = (color) => ({
-      attributes: {
-        fill: color,
-        stroke: color,
-        lineWidth: 15,
-        opacity: 1
-      }
-    });
-
-    return settings;
+    this.generateChart(chartData, 'chartWrapper');
   }
 
   getChartData = () => {
@@ -136,140 +71,24 @@ class CampaignBubbleChart extends React.Component {
     return data;
   }
 
-  generateChart(data) {
-    const styleSettings = this.getChartStyleSettings();
-
-    Highcharts.chart('chartWrapper', {
-      chart: {
-        type: 'bubble',
-        plotBorderWidth: 0,
-        zoomType: 'xy'
-      },
-
-      legend: styleSettings.legend,
-
-      title: {
-        text: ''
-      },
-
-      xAxis: {
-        title: {
-          text: data.xTitle.toUpperCase(),
-          style: styleSettings.chart_titleStyle
-        },
-        gridLineWidth: 1,
-        startOnTick: false,
-        endOnTick: false,
-        maxPadding: -0.2,
-        width: '100%',
-        labels: {
-          format: '{value}'
-        },
-        plotLines: [styleSettings.getPlotSettingsObj(data.xPlot)]
-      },
-
-      yAxis: {
-        title: {
-          text: data.yTitle.toUpperCase(),
-          style: styleSettings.chart_titleStyle
-        },
-        gridLineWidth: 1,
-        startOnTick: false,
-        endOnTick: false,
-        labels: {
-          format: '{value}'
-        },
-        maxPadding: 0.2,
-        plotLines: [{
-          value: 51685.48074016859,
-          color: '#2f2e32',
-          dashStyle: 'dot',
-          width: 2
-        }]
-        // plotLines: [styleSettings.getPlotSettingsObj(data.yPlot)]
-      },
-
-      colors: styleSettings.color,
-
+  generateChart = (data, targerId) => {
+    const chartOptions = {
+      chart: ChartConfig.chart,
+      legend: ChartConfig.legend,
+      title: ChartConfig.title,
+      colors: ChartConfig.colors,
+      tooltip: ChartTooltip,
       series: [
-        {
-          name: 'Lorem',
-          marker: styleSettings.chart_markerSettings,
-          states: {
-            hover: {
-              halo: styleSettings.halo(styleSettings.color[0])
-            }
-          },
-          data: data.series[0]
-        },
-        {
-          name: 'Ipsum',
-          marker: styleSettings.chart_markerSettings,
-          states: {
-            hover: {
-              halo: styleSettings.halo(styleSettings.color[1])
-            }
-          },
-          data: data.series[1]
-        },
-        {
-          name: 'Ipsum',
-          marker: styleSettings.chart_markerSettings,
-          states: {
-            hover: {
-              halo: styleSettings.halo(styleSettings.color[2])
-            }
-          },
-          data: data.series[2]
-        },
-        {
-          name: 'Ipsum',
-          marker: styleSettings.chart_markerSettings,
-          states: {
-            hover: {
-              halo: styleSettings.halo(styleSettings.color[3])
-            }
-          },
-          data: data.series[3]
-        }
+        getOneSeriesConfig(data.series[0], ChartConfig.colors[3]),
+        getOneSeriesConfig(data.series[1], ChartConfig.colors[1]),
+        getOneSeriesConfig(data.series[2], ChartConfig.colors[2]),
+        getOneSeriesConfig(data.series[3], ChartConfig.colors[3])
       ],
+      xAxis: ChartConfig.getXAxis(data.xTitle, data.xPlot),
+      yAxis: ChartConfig.getXAxis(data.yTitle, data.yPlot)
+    };
 
-      tooltip: {
-        borderColor: '#00000000',
-        backgroundColor: '#00000000',
-        useHTML: true,
-        shadow: false,
-        headerFormat: '<table class="chart-tooltip">',
-        pointFormat: `<tbody>
-                        <tr>
-                            <td class="tooltip-label">Product ID:</td>
-                            <td>{point.product_id}</td>
-                        </tr>
-                        <tr>
-                            <td class="tooltip-label">Product Name:</td>
-                            <td>{point.product_name}</td>
-                        </tr>
-                        <tr>
-                            <td class="tooltip-label">Department Name:</td>
-                            <td>{point.department_name}</td>
-                        </tr>
-                        <tr>
-                            <td class="tooltip-label">Suplier ID:</td>
-                            <td>{point.supplier_name}</td>
-                        </tr>
-                        <tr>
-                            <td class="tooltip-label">Total Sales:</td>
-                            <td>{point.total_sales}</td>
-                        </tr>
-                        <tr>
-                            <td class="tooltip-label">Incr Margin:</td>
-                            <td>{point.incr_margin}</td>
-                        </tr>
-                      </tbody>`,
-        footerFormat: '</table>',
-        followPointer: true
-      }
-    });
+    Highcharts.chart(targerId, chartOptions);
   }
 
   render() {

@@ -34,15 +34,7 @@ class SearchableComboList extends React.Component {
     clearTimeout(this.debounceTimeout);
 
     this.debounceTimeout = setTimeout(() => {
-      const { data } = this.props;
-
-      const filteredOptions = data.filter((item) => {
-        const dataValue = item.name.toLowerCase();
-
-        return dataValue.indexOf(value.toLowerCase()) !== -1;
-      });
-
-      this.setState({ filteredOptions, query: value });
+      this.filterListByQuery(value);
     }, DEBOUNCE_TIME);
   }
 
@@ -86,6 +78,18 @@ class SearchableComboList extends React.Component {
         {optionsToShow}
       </ListGroup>
     );
+  }
+
+  filterListByQuery = (query) => {
+    const { data } = this.props;
+
+    const filteredOptions = data.filter((item) => {
+      const dataValue = item.name.toLowerCase();
+
+      return dataValue.indexOf(query.toLowerCase()) !== -1;
+    });
+
+    this.setState({ filteredOptions, query });
   }
 
   AppendInput = () => {

@@ -78,4 +78,20 @@ describe('DataGrid Component', () => {
 
     expect(result).toEqual(shuldBe);
   });
+
+  it('Should change tabs', () => {
+    const grid = mount(<DataGrid data={mockDataWithGroups} className="campaigns-data-grid"/>);
+
+    grid.instance().selectGroup({
+      currentTarget: {
+        dataset: {
+          section: 'group2'
+        }
+      }
+    });
+
+    grid.update();
+
+    expect(grid.find('.table-header-groups .active[data-section="group2"]')).toHaveLength(1);
+  });
 });

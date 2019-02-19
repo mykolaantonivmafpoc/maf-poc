@@ -4,8 +4,8 @@ import Root from './containers/Root';
 import configureStore from './store/configureStore';
 
 import 'bootstrap/dist/css/bootstrap.css';
-import './theme.css';
-import './App.css';
+import './theme.scss';
+import './App.scss';
 
 const store = configureStore();
 

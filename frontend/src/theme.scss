@@ -1,0 +1,77 @@
+/* Form Controls */
+.form-control,
+.btn {
+  border-radius: 0;
+  border: 1px solid #ced4da;
+}
+
+input.form-control:hover {
+  cursor: default;
+}
+
+a,
+a:focus {
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fafafa;
+  border-radius: 4px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #dfdfdf;
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ababab;
+}
+
+/* Override bootrsap theme */
+
+.btn {
+  padding: 3px 24px;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* On Focus */
+.form-control:focus,
+.btn:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+/* On Hover */
+.form-control:hover,
+.btn:hover {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-dark {
+  background-color: #2f2e32;
+  color: #fff;
+}
+
+.btn-light {
+  border: 2px solid #dfdfdf;
+  background-color: #fff;
+}
+
+.popover {
+  border-radius: 0;
+  border: none;
+  box-shadow: 0 0 10px #0002;
+}
