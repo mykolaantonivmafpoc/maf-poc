@@ -1,5 +1,5 @@
-export const API_ROOT = process.env.REACT_APP_API_ROOT || 'https://api-develop.maf-poc.com/';
-export const API_PATH = '/v1';
+export const API_ROOT = process.env.REACT_APP_API_ROOT || 'https://api-develop.maf-poc.com';
+export const API_PATH = '/';
 
 export const config = {
   apiDefContentType: 'application/json',

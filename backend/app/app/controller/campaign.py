@@ -1,22 +1,14 @@
-from .. import app, spec, basic_auth # NOQA
-from .. import db, func, url_for, jsonify, request # NOQA
-from ..model import kpi_list, buildMetaOptionsQuery # NOQA
-from ..model import create_frame, buildMetaOptions # NOQA
-from ..model import buildArgumentFilter # NOQA
-from ..model import CampaignType # NOQA
-from ..model import Campaign # NOQA
-from ..model import Product # NOQA
-from ..model import Supplier # NOQA
-from ..model import Department # NOQA
-from ..model import Section # NOQA
-from ..model import FamilyCategory # NOQA
-from ..model import SubFamilyCategory # NOQA
-from ..model import PromoMechanic # NOQA
-from ..model import KpiFact # NOQA
+from .. import app, spec, basic_auth
+from .. import db, func, url_for, jsonify
+from ..model import kpi_list, buildMetaOptionsQuery
+from ..model import create_frame, buildMetaOptions
+from ..model import buildArgumentFilter
+from ..model import Campaign
+from ..model import KpiFact
 
 
-@app.route('/v1/Campaigns', methods=['GET'])
-@app.route('/v1/Campaigns/', methods=['GET'])
+@app.route('/v1/campaigns', methods=['GET'])
+@app.route('/v1/campaigns/', methods=['GET'])
 @basic_auth.required
 def listCampaign():
     """Campaign dimmension.
@@ -35,7 +27,12 @@ def listCampaign():
     frame['meta']['kpi_options'] = {}
     argsFilter = buildArgumentFilter()
 
-    ml = Campaign.query.all()
+    ml = db.session.query(Campaign)\
+        .join(KpiFact, KpiFact.campaign_id == Campaign.id)\
+        .filter(*argsFilter)\
+        .group_by(Campaign.id, KpiFact.campaign_id)\
+        .all()
+
     content = [
         {
             'id': x.id,
@@ -83,8 +80,8 @@ def listCampaign():
     return jsonify(frame)
 
 
-@app.route('/v1/Campaign/<int:id>', methods=['GET'])
-@app.route('/v1/Campaign/<int:id>/', methods=['GET'])
+@app.route('/v1/campaigns/<int:id>', methods=['GET'])
+@app.route('/v1/campaigns/<int:id>/', methods=['GET'])
 @basic_auth.required
 def listCampaignItem(id):
     """Campaign single item.
@@ -134,6 +131,7 @@ def listCampaignItem(id):
             {
                 'product_id': x.product_id,
                 'product_name': x.product_name,
+                'product_description': x.product_description,
                 'supplier_id': x.supplier_id,
                 'supplier_name': x.supplier_name,
                 'department_id': x.department_id,

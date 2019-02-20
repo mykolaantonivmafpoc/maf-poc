@@ -62,6 +62,7 @@ def buildMetaOptionsQuery(model, query_args, argsFilter):
         KpiFact.timestamp.label('timestamp'),
         Product.id.label('product_id'),
         Product.name.label('product_name'),
+        Product.description.label('product_description'),
         Supplier.id.label('supplier_id'),
         Supplier.name.label('supplier_name'),
         Section.id.label('section_id'),

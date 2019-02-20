@@ -1,19 +1,18 @@
 import string, random, json, os, decimal # NOQA
+import logging, sys # NOQA
 from datetime import datetime as dt # NOQA
 from flask import Flask, jsonify, g, url_for as _url_for # NOQA
-from flask import request, Blueprint # NOQA
+from flask import request, make_response, Blueprint # NOQA
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PrimaryKeyConstraint # NOQA
 from sqlalchemy.sql import func # NOQA
 from flask_marshmallow import Marshmallow
-from flask_cors import CORS
 from flask_monitor import Monitor, ObserverLog
 from flask_swagger_ui import get_swaggerui_blueprint
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
-from flask_basicauth import BasicAuth
-import logging
+from flask_basicauth import BasicAuth as OldBasicAuth
 
 
 def url_for(endpoint, **values):
@@ -82,29 +81,75 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 if app.debug:
     app.config['SQLALCHEMY_ECHO'] = True
 
-app.config['BASIC_AUTH_USERNAME'] = \
-    os.getenv('BASIC_AUTH_USERNAME', default='apiuser')
+# cors = CORS(
+#     app,
+#     resources={r"/*": {
+#         "origins": os.getenv('CORS_ORIGINS', default="*")
+#     }}
+# )
 
-app.config['BASIC_AUTH_PASSWORD'] = \
-    os.getenv('BASIC_AUTH_PASSWORD', default='apipass')
 
-cors = CORS(
-    app,
-    resources={r"/v1/*": {
-        "origins": os.getenv('CORS_ORIGINS', default="*")
-    }}
-)
+stub_auth_list = {
+    "apiuser": {
+        'password': 'apipass',
+        "acl": {
+            '/': ['GET', 'OPTIONS'],
+            '/v1/campaigns/': ['GET', 'OPTIONS'],
+            '/v1/campaigns/<int:id>/': ['GET', 'OPTIONS'],
+        }
+    },
+    "adminUser": {
+        'password': 'apipass',
+        "acl": {
+            '/': ['GET', 'OPTIONS'],
+            '/v1/campaigns/': ['GET', 'POST', 'OPTIONS'],
+            '/v1/campaigns/<int:id>/': ['GET', 'PUT', 'DELETE', 'OPTIONS'],
+        }
+    },
+}
+
+current_user = {}
+
+
+class BasicAuth(OldBasicAuth):
+
+    def check_credentials(self, username, password):
+
+        print(
+            "{} {}:{}@{}".format(
+                request.method,
+                username,
+                password,
+                request.url_rule.rule
+            ), file=sys.stderr)
+
+        if username in stub_auth_list:
+            user = stub_auth_list[username]
+
+            if password == user['password']:
+                rule = request.url_rule.rule
+
+                if rule in user['acl']:
+                    if request.method in user['acl'][rule]:
+
+                        current_user['object'] = user
+                        current_user['path_methods'] = user['acl'][rule]
+
+                        return True
 
 
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Allow', 'OPTIONS,GET,HEAD,POST,PUT,DELETE')
+    response.headers.add(
+        'Access-Control-Allow-Methods',
+        'OPTIONS,GET,HEAD,POST,PUT,DELETE')
+    response.headers.add('Version', '1.0.0')
 
     response.headers.add(
         'Access-Control-Allow-Headers',
         'Content-Type,Authorization')
-
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     return response
 
 
@@ -131,7 +176,7 @@ spec = APISpec(
 
 # import all controllers
 from .controller import campaign # NOQA
-@app.route('/v1', methods=['GET'])
+@app.route('/', methods=['GET'])
 @basic_auth.required
 def listVersion():
     return json.dumps({"Campaigns": url_for('listCampaign')})
