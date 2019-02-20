@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
+import PageHeader from '../../components/Navigation/PageHeader';
+import NavWrapper from '../NavWrapper';
 import CampaignBubbleChart from '../../components/DataVisualization/CampaignBubbleChart';
+import SettingsPopup from '../../components/DataVisualization/SettingsPopup';
+import CampaignsListFilter from '../../components/Navigation/CampaignsListFilter';
 import DataGrid from '../../components/DataVisualization/DataGrid';
 import { loadAllCampaigns, loadCampaign } from '../../actions/campaignActions';
-import NavWrapper from '../NavWrapper';
-import SettingsPopup from '../../components/DataVisualization/SettingsPopup';
-import PageHeader from '../../components/Navigation/PageHeader';
-import CampaignsListFilter from '../../components/Navigation/CampaignsListFilter';
 import { productListTableDef } from '../../config';
 
-import './Campaign.css';
+import './Campaign.scss';
 
 class Campaign extends Component {
   static propTypes = {
@@ -46,6 +47,7 @@ class Campaign extends Component {
       isFetchingList,
       match
     } = props;
+
     if (isFetchingList !== state.isFetchingList || isFetchingOptions !== state.isFetchingOptions) {
       if (isFetchingOptions === false && isFetchingList === undefined) {
         loadAll();
@@ -108,8 +110,8 @@ class Campaign extends Component {
 
     return (
       <div>
-        <div>{props.value}</div>
-        <div className={`percentages ${class_percentageColor}`}>
+        <div title={props.value}>{props.value}</div>
+        <div title={props.percent} className={`percentages ${class_percentageColor}`}>
           {props.percent}
           %
         </div>

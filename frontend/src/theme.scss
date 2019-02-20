@@ -22,8 +22,9 @@ a:focus {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #fafafa;
+  background: #e2e2e255;
   border-radius: 4px;
+  transform: translate(-10px, 0);
 }
 
 /* Handle */

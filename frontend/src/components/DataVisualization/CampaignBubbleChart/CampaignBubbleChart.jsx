@@ -2,7 +2,7 @@ import React from 'react';
 import Highcharts from 'highcharts';
 import HighchartsMore from 'highcharts-more';
 import { meanBy } from 'lodash';
-import './CampaignBubbleChart.css';
+import './CampaignBubbleChart.scss';
 import PropTypes from 'prop-types';
 import { ChartConfig, ChartTooltip, getOneSeriesConfig } from './ChartConfig';
 

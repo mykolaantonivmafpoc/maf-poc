@@ -1,5 +1,5 @@
 import React from 'react';
-import './DataGrid.css';
+import './DataGrid.scss';
 import PropTypes from 'prop-types';
 
 class DataGrid extends React.Component {
@@ -63,7 +63,7 @@ class DataGrid extends React.Component {
         const class_lastInGroup = id === group.columns.length - 1 ? 'last-of-section' : '';
 
         headerColumns.push(
-          <th className={class_lastInGroup} key={column.id}>
+          <th className={class_lastInGroup} key={column.id} data-section={group.id}>
             {column.name}
           </th>
         );
@@ -80,6 +80,9 @@ class DataGrid extends React.Component {
   BodyRow = (props) => {
     const columns = [];
     const groupColumnsCount = {};
+    const { row } = props;
+    const onClickAction = props.row.action;
+    let resultTemplate;
 
     if (props.groupsItemsCount) {
       Object.keys(props.groupsItemsCount).forEach((group) => {
@@ -87,20 +90,21 @@ class DataGrid extends React.Component {
       });
     }
 
-    Object.keys(props.row).forEach((columnId) => {
-      const value = props.row[columnId].value || props.row[columnId];
-      const class_customClass = props.row[columnId].className || '';
+    Object.keys(props.columnsIdNameMap).forEach((columnId) => {
+      const value = row[columnId].value || row[columnId];
+      const class_customClass = row[columnId].className || '';
 
       if (props.groupsItemsCount) {
         const groupId = props.columnsToGroupMap[columnId];
         const numberInGroup = groupColumnsCount[groupId]++;
         const maxCountInGroup = props.groupsItemsCount[groupId];
         const class_lastInGroup = numberInGroup === maxCountInGroup - 1 ? 'last-of-section' : '';
+        const title = typeof value === 'object' ? '' : value;
 
         columns.push(
           <td className={`${class_lastInGroup} ${class_customClass}`} key={columnId} data-section={groupId} >
             <label className="mobile-label">{props.columnsIdNameMap[columnId]}</label>
-            <div className="value">{value}</div>
+            <div className="value" title={title}>{value}</div>
           </td>
         );
       } else {
@@ -113,11 +117,21 @@ class DataGrid extends React.Component {
       }
     });
 
-    return (
-      <tr>
-        {columns}
-      </tr>
-    );
+    if (onClickAction) {
+      resultTemplate = (
+        <tr onClick={onClickAction.bind(row)}>
+          {columns}
+        </tr>
+      );
+    } else {
+      resultTemplate = (
+        <tr>
+          {columns}
+        </tr>
+      );
+    }
+
+    return resultTemplate;
   }
 
   BodyRows = (props) => {

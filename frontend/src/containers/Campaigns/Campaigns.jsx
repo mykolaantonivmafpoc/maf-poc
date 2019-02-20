@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { loadAllCampaigns } from '../../actions/campaignActions';
 import DataGrid from '../../components/DataVisualization/DataGrid';
 import PageHeader from '../../components/Navigation/PageHeader';
 import NavWrapper from '../NavWrapper';
 import { campaignListTableDef } from '../../config';
+import { formatDate } from '../../utils/dates/dates';
 
-import './Campaigns.css';
+import './Campaigns.scss';
 
 class Campaigns extends Component {
   static propTypes = {
     campaigns: PropTypes.arrayOf(PropTypes.shape([])),
-    meta: PropTypes.shape({ type: PropTypes.string })
+    meta: PropTypes.shape({ type: PropTypes.string }),
+    history: PropTypes.shape({})
   };
 
   static defaultProps = {
     meta: { type: 'Campaign' },
-    campaigns: []
+    campaigns: [],
+    history: {}
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -38,10 +40,10 @@ class Campaigns extends Component {
     this.state = {};
   }
 
-  Campaign = ({ type, name, id, date }) => (
+  Campaign = ({ type, name, date }) => (
     <div className="cell-campaign-inner-wrapper">
       <div className="text-muted campaign-type">{type}</div>
-      <div className="campaign-name"><Link to={`/campaign/${id}`}>{name}</Link></div>
+      <div className="campaign-name">{name}</div>
       <div className="text-muted campaign-date">{date}</div>
     </div>
   );
@@ -64,15 +66,15 @@ class Campaigns extends Component {
     const { campaigns } = this.props;
     return campaigns.map((row) => {
       const transformedRow = {};
-      const dateTo = new Date(row.date_to);
-      const dateFrom = new Date(row.date_from);
+      const dateTo = formatDate(new Date(row.date_to));
+      const dateFrom = formatDate(new Date(row.date_from));
+      const { history } = this.props;
 
       transformedRow.campaign = {
         value: (<this.Campaign
           type={row.campaign_type}
           name={row.name}
           date={`${dateFrom} - ${dateTo}`}
-          id={row.id}
         />),
         className: 'cell-campaign'
       };
@@ -111,6 +113,13 @@ class Campaigns extends Component {
           percent={row.incr_tse_per}
         />
       );
+
+      transformedRow.id = row.id;
+
+      transformedRow.action = function action() {
+        history.push(`/campaign/${this.id}`);
+        document.querySelector('.main-c').scrollTo(0, 0);
+      };
 
       return transformedRow;
     });

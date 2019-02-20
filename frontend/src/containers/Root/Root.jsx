@@ -34,7 +34,7 @@ class Root extends Component {
     const { store } = this.props;
     return (
       <Provider store={store}>
-        <section>
+        <section className="root">
           <Route
             exact
             path="/"

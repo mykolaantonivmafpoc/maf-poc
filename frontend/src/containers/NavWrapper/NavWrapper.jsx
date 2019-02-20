@@ -10,7 +10,7 @@ import Filter from '../../components/Navigation/Filter';
 import MainNav from '../../components/Navigation/MainNav';
 import MobileNav from '../../components/Navigation/MobileNav';
 
-import './NavWrapper.css';
+import './NavWrapper.scss';
 
 const NavWrapper = ({
   children,

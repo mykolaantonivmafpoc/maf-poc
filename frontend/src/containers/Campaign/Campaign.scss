@@ -1,5 +1,10 @@
+@import '../../Vars.scss';
+
 .campaign-chart {
   margin-bottom: 30px;
+  border: 1px solid #e2e2e2;
+  border-left: none;
+  border-right: none;
 }
 
 .campaign-data-grid .percentages {
@@ -16,7 +21,7 @@
   color: #2f2e32;
 }
 
-@media (min-width: 801px) {
+@media (min-width: $bp_phone + 1px) {
   .campaign-data-grid [data-section="general"] {
     width: 28%;
   }
@@ -36,11 +41,40 @@
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: $bp_desktop_l - 1px) {
   .campaign-data-grid .table-header-groups [data-section="general"] {
     display: none;
   }
+}
 
+@media (min-width: $bp_phone + 1px) and (max-width: $bp_desktop_l - 1px) {
+  .campaign-data-grid table tbody td,
+  .campaign-data-grid .table-columns-header th,
+  .campaign-data-grid tbody .mobile-label {
+    display: none;
+  }
+
+  .campaign-data-grid td[data-section="general"],
+  .campaign-data-grid table[data-selected="promo"] tbody [data-section="promo"],
+  .campaign-data-grid table[data-selected="price"] tbody [data-section="price"],
+  .campaign-data-grid table[data-selected="increase"] tbody [data-section="increase"] {
+    display: table-cell;
+  }
+
+  .campaign-data-grid .table-columns-header th[data-section="general"],
+  .campaign-data-grid table[data-selected="promo"] .table-columns-header th[data-section="promo"],
+  .campaign-data-grid table[data-selected="price"] .table-columns-header th[data-section="price"],
+  .campaign-data-grid table[data-selected="increase"] .table-columns-header th[data-section="increase"] {
+    display: table-cell;
+  }
+
+  .campaign-data-grid td[data-section="general"],
+  .campaign-data-grid .table-columns-header th[data-section="general"] {
+    width: 10%;
+  }
+}
+
+@media (max-width: $bp_phone) {
   .campaign-data-grid tbody .cell-campaign .mobile-label {
     display: none;
   }

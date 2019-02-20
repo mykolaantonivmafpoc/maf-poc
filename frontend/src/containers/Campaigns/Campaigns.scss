@@ -1,0 +1,74 @@
+@import '../../Vars.scss';
+
+.campaigns-data-grid {
+  td:first-child {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .campaign-type {
+    text-transform: uppercase;
+  }
+
+  .campaign-name {
+    padding: 4px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2f2e32;
+  }
+
+  .mobile-label {
+    display: none;
+  }
+
+  .percentages {
+    font-weight: 600;
+  }
+}
+
+@media (max-width: $bp_phone) {
+  .campaigns-data-grid {
+    thead th:not(:first-child) {
+      display: none;
+    }
+
+    thead th:first-child:hover,
+    thead tr {
+      background-color: transparent;
+      margin: 0;
+    }
+
+    .mobile-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    td:first-child {
+      border-top: none;
+      border-bottom: 1px solid #dfdfdf;
+      margin-bottom: 7px;
+    }
+
+    td:not(:first-child) {
+      grid-auto-flow: dense;
+      border: none;
+    }
+
+    td > :last-child {
+      grid-column-start: 2;
+    }
+
+    .cell-campaign-inner-wrapper {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .cell-campaign .mobile-label {
+      display: none;
+    }
+  }
+}
