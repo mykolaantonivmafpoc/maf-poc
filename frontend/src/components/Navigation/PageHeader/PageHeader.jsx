@@ -24,7 +24,7 @@ class PageHeader extends React.Component {
     if (filters.visible) {
       titleElement = (
         <div>
-          <h1 className="small-title">{pageTitle}</h1>
+          <h1>{pageTitle}</h1>
           {filters.content}
         </div>
       );

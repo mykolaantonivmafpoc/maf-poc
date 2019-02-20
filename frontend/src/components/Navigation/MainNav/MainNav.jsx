@@ -5,49 +5,45 @@ import { Link } from 'react-router-dom';
 import './MainNav.scss';
 import cancel from './cancel-white.svg';
 
-const MainNav = ({ removeMainNav, showMainNav, hideMainNav, navShown, logout }) => (
+const MainNav = ({
+  removeMainNav,
+  showMainNav,
+  hideMainNav,
+  navShown,
+  logout
+}) => (
   <aside
     className={`left-menu-wrapper ${
       navShown === undefined ? 'nav-hidden' : 'nav-shown'
     }`}
   >
     <ul className="nav flex-column">
-      <li className="nav-item">
-        <Link to="/" />
-        <span
-          onClick={window.innerWidth > 1024 ? hideMainNav : removeMainNav}
-          className="close-nav-btn float-right"
-        >
-          <img alt="" src={cancel} />
+      <li className="nav-item logo">
+        <Link to="/">Majid Al Futtam</Link>
+        <span onClick={removeMainNav} className="close-btn float-right">
+          <img alt="cancel" src={cancel} />
         </span>
       </li>
-      <li className="nav-item">
-        <Link to="/">Dashboard</Link>
+      <li className="nav-item dashboard">
+        <Link to="/dashboard">Dashboard</Link>
       </li>
-      <li className="nav-item">
+      <li className="nav-item campaigns">
         <Link to="/campaigns">Campaigns</Link>
       </li>
-      <li className="nav-item">
-        <Link to="/campaigns">User Settigns</Link>
+      <li className="nav-item value-based">
+        <Link to="/">Value-based Section</Link>
       </li>
-      <li className="nav-item">
-        <div onClick={logout}>
+      <li className="nav-item user-settings">
+        <Link to="/">User Settigns</Link>
+      </li>
+      <li className="nav-item increase-nav" onClick={showMainNav} />
+      <li className="nav-item decrease-nav" onClick={hideMainNav}>
+        Collapse Side Bar
+      </li>
+      <li className="nav-item logout" onClick={logout}>
         Logout
-        </div>
       </li>
     </ul>
-
-    {navShown === undefined && (
-      <button type="submit" onClick={showMainNav}>
-        Show
-      </button>
-    )}
-
-    {navShown === true && window.innerWidth > 320 && (
-      <button type="submit" onClick={hideMainNav}>
-        Hide
-      </button>
-    )}
   </aside>
 );
 

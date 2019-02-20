@@ -84,14 +84,13 @@ class Filter extends Component {
         <Form className="filter-body">
           <Form.Group className="form-group">
             <Form.Label htmlFor="department" className="filters-label">
-              DepartmentW
+              Department
             </Form.Label>
             <Form.Control
               as="select"
               className="form-control"
               name="department"
               id="department"
-              placeholder="Select"
               onChange={this.setStateVal}
               value={department}
             >
@@ -141,11 +140,11 @@ class Filter extends Component {
             >
               <option value="">Select</option>
               {options.family_category
-                && options.family_category.map(o => (
-                  <option key={o.id} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
+              && options.family_category.map(o => (
+                <option key={o.id} value={o.id}>
+                  {o.name}
+                </option>
+              ))}
             </Form.Control>
           </Form.Group>
           <Form.Group className="form-group">
@@ -163,11 +162,11 @@ class Filter extends Component {
             >
               <option value="">Select</option>
               {options.sub_family_category
-                && options.sub_family_category.map(o => (
-                  <option key={o.id} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
+              && options.sub_family_category.map(o => (
+                <option key={o.id} value={o.id}>
+                  {o.name}
+                </option>
+              ))}
             </Form.Control>
           </Form.Group>
           <Form.Group className="datepicker-wrapper col-6 pl-0 float-left">

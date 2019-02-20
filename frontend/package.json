@@ -31,6 +31,14 @@
     "test": "run-s test:**",
     "eject": "react-scripts eject"
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!src/serviceWorker.js",
+      "!src/**/index.{jsx,js}"
+    ]
+  },
   "browserslist": [
     ">0.2%",
     "not dead",
