@@ -26,7 +26,7 @@ describe('Campaign actions', () => {
       }
     })
     );
-    const fn = loadCampaign(1);
+    const fn = loadCampaign({}, 1);
     fn(dispatch, getState);
     const action = dispatch.mock.results[0].value;
 

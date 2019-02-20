@@ -53,7 +53,7 @@ class Filter extends Component {
         filterObj[k] = param;
       }
     });
-    filterAction(id, filterObj);
+    filterAction(filterObj, id);
   }
 
   reset() {

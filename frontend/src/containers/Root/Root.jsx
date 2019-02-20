@@ -8,12 +8,12 @@ import {
 
 import PrivateRoute from '../../components/Routing/PrivateRoute';
 
-import Dashboard from '../Dashboard';
 import Campaigns from '../Campaigns';
 import Campaign from '../Campaign';
 import Login from '../Login';
 
 import optionsAction from '../../actions/HATEOASActions';
+import { routeByName } from '../../config';
 
 class Root extends Component {
   static propTypes = {
@@ -39,14 +39,13 @@ class Root extends Component {
             exact
             path="/"
             render={() => (
-              <Redirect to={{ pathname: '/campaigns' }}/>
+              <Redirect to={{ pathname: routeByName('campaigns').path }}/>
             )}
           />
           <Route path="/login" component={Login} />
 
-          <PrivateRoute name="dashboard" path="/dashboard" component={Dashboard}/>
-          <PrivateRoute name="campaigns" path="/campaigns" component={Campaigns}/>
-          <PrivateRoute name="campaign" path="/campaign/:id" component={Campaign}/>
+          <PrivateRoute {...routeByName('campaigns')} component={Campaigns}/>
+          <PrivateRoute {...routeByName('campaign')} component={Campaign}/>
         </section>
       </Provider>
     );

@@ -5,6 +5,19 @@ export const config = {
   apiDefContentType: 'application/json',
 };
 
+export const routes = [
+  { path: '/campaigns', name: 'campaigns' },
+  { path: '/campaign/:id', name: 'campaign' },
+];
+
+export const routeByPath = path => (
+  routes.find(route => path === route.path)
+);
+
+export const routeByName = name => (
+  routes.find(route => name === route.name)
+);
+
 export const defHeaders = {
   'Content-Type': config.apiDefContentType,
 };

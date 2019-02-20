@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import * as navigationActions from '../../actions/navigationActions';
-import { loadCampaign } from '../../actions/campaignActions';
+import { loadCampaign, loadAllCampaigns } from '../../actions/campaignActions';
 import { logout } from '../../actions/userActions';
 
 import Filter from '../../components/Navigation/Filter';
 import MainNav from '../../components/Navigation/MainNav';
 import MobileNav from '../../components/Navigation/MobileNav';
+import { routeByPath } from '../../config';
 
 import './NavWrapper.scss';
 
@@ -22,34 +24,45 @@ const NavWrapper = ({
   removeMainNav,
   kpi_options,
   loadCampaign: lc,
-  logout: logoutFn
-}) => (
-  <section>
-    {navigation.navShown === undefined || navigation.navShown === true ? (
-      <MainNav
-        removeMainNav={removeMainNav}
+  loadAllCampaigns: loadAll,
+  logout: logoutFn,
+  match
+}) => {
+  let filterAction = () => {};
+  const routeConf = routeByPath(match.path) || {};
+  if (routeConf.name === 'campaigns') {
+    filterAction = loadAll;
+  } else if (routeConf.name === 'campaign') {
+    filterAction = lc;
+  }
+  return (
+    <section>
+      {navigation.navShown === undefined || navigation.navShown === true ? (
+        <MainNav
+          removeMainNav={removeMainNav}
+          showMainNav={showMainNav}
+          hideMainNav={hideMainNav}
+          navShown={navigation.navShown}
+          logout={logoutFn}
+        />
+      ) : null}
+      <MobileNav
+        hideFilter={hideFilter}
+        showFitler={showFitler}
         showMainNav={showMainNav}
+        removeMainNav={removeMainNav}
         hideMainNav={hideMainNav}
-        navShown={navigation.navShown}
         logout={logoutFn}
       />
-    ) : null}
-    <MobileNav
-      hideFilter={hideFilter}
-      showFitler={showFitler}
-      showMainNav={showMainNav}
-      removeMainNav={removeMainNav}
-      hideMainNav={hideMainNav}
-      logout={logoutFn}
-    />
-    {navigation.filterShown
-      ? <Filter hideFilter={hideFilter} options={kpi_options} filterAction={lc}/>
-      : null}
-    <section className="main-c">
-      {children}
+      {navigation.filterShown
+        ? <Filter hideFilter={hideFilter} options={kpi_options} filterAction={filterAction}/>
+        : null}
+      <section className="main-c">
+        {children}
+      </section>
     </section>
-  </section>
-);
+  );
+};
 
 const mapStateToProps = state => {
   const {
@@ -58,6 +71,9 @@ const mapStateToProps = state => {
       singleCampaign: {
         meta: campaignMeta,
       },
+      campaignList: {
+        meta: campaignsMeta
+      }
     },
     entities: {
       campaigns,
@@ -71,10 +87,12 @@ const mapStateToProps = state => {
   const options = { department, family_category, section, sub_family_category };
   const kpi_options = {};
 
-  const kpi_options_row = (campaigns && campaignMeta && campaigns[campaignMeta].kpi_options) || {};
-  Object.keys(kpi_options_row).forEach(option => {
+  const kpi_options_raw = (campaigns && campaignMeta && campaigns[campaignMeta].kpi_options)
+    || (campaignsMeta && campaignsMeta.kpi_options)
+    || {};
+  Object.keys(kpi_options_raw).forEach(option => {
     if (options[option]) {
-      kpi_options[option] = [...new Set(kpi_options_row[option])].map(id => {
+      kpi_options[option] = [...new Set(kpi_options_raw[option])].map(id => {
         return options[option][id];
       });
     }
@@ -101,14 +119,16 @@ NavWrapper.propTypes = {
   hideMainNav: PropTypes.func.isRequired,
   kpi_options: PropTypes.shape({}),
   loadCampaign: PropTypes.func.isRequired,
-  logout: PropTypes.func.isRequired
+  loadAllCampaigns: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  match: PropTypes.shape({}).isRequired,
 };
 
 NavWrapper.defaultProps = {
   kpi_options: {}
 };
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
-  { ...navigationActions, loadCampaign, logout }
-)(NavWrapper);
+  { ...navigationActions, loadCampaign, loadAllCampaigns, logout }
+)(NavWrapper));

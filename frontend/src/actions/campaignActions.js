@@ -36,7 +36,7 @@ export const loadAllCampaigns = (filter) => (dispatch) => {
   return dispatch(fetchAll(filter));
 };
 
-export const loadCampaign = (id, filter) => (dispatch, getState) => {
+export const loadCampaign = (filter, id) => (dispatch, getState) => {
   const campaign = getState().entities.campaigns[id];
   const links = '_links';
 

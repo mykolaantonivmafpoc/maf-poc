@@ -53,7 +53,7 @@ class Campaign extends Component {
         loadAll();
       }
       if (isFetchingList === false) {
-        loadSingle(match.params.id);
+        loadSingle({}, match.params.id);
       }
       return { isFetchingOptions, isFetchingList };
     }
