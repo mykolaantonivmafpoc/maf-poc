@@ -2,42 +2,48 @@
 
 .campaign-chart {
   margin-bottom: 30px;
+  padding: 10px 20px 0 14px;
   border: 1px solid #e2e2e2;
   border-left: none;
   border-right: none;
+  background-color: #fff;
 }
 
-.campaign-data-grid .percentages {
-  font-weight: 600;
-}
+.campaign-data-grid {
+  .percentages {
+    font-weight: 600;
+  }
 
-.campaign-data-grid .section-id {
-  color: #8d8d8d;
-}
+  .section-id {
+    color: #8d8d8d;
+  }
 
-.campaign-data-grid .section-name {
-  font-weight: 700;
-  font-size: 15px;
-  color: #2f2e32;
+  .section-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #2f2e32;
+  }
 }
 
 @media (min-width: $bp_phone + 1px) {
-  .campaign-data-grid [data-section="general"] {
-    width: 28%;
-  }
+  .campaign-data-grid {
+    [data-section="general"] {
+      width: 28%;
+    }
 
-  .campaign-data-grid [data-section="increase"] {
-    width: 40%;
-  }
+    [data-section="increase"] {
+      width: 40%;
+    }
 
-  .campaign-data-grid [data-section="price"],
-  .campaign-data-grid [data-section="promo"] {
-    width: 16%;
-  }
+    [data-section="price"],
+    [data-section="promo"] {
+      width: 16%;
+    }
 
-  .campaign-data-grid .cell-sales,
-  .campaign-data-grid .cell-volume {
-    font-weight: 600;
+    .cell-sales,
+    .cell-volume {
+      font-weight: 600;
+    }
   }
 }
 
@@ -48,76 +54,101 @@
 }
 
 @media (min-width: $bp_phone + 1px) and (max-width: $bp_desktop_l - 1px) {
-  .campaign-data-grid table tbody td,
-  .campaign-data-grid .table-columns-header th,
-  .campaign-data-grid tbody .mobile-label {
-    display: none;
-  }
+  .campaign-data-grid {
+    table tbody td,
+    .table-columns-header th,
+    tbody .mobile-label {
+      display: none;
+    }
 
-  .campaign-data-grid td[data-section="general"],
-  .campaign-data-grid table[data-selected="promo"] tbody [data-section="promo"],
-  .campaign-data-grid table[data-selected="price"] tbody [data-section="price"],
-  .campaign-data-grid table[data-selected="increase"] tbody [data-section="increase"] {
-    display: table-cell;
-  }
+    td[data-section="general"],
+    table[data-selected="promo"] tbody [data-section="promo"],
+    table[data-selected="price"] tbody [data-section="price"],
+    table[data-selected="increase"] tbody [data-section="increase"] {
+      display: table-cell;
+    }
 
-  .campaign-data-grid .table-columns-header th[data-section="general"],
-  .campaign-data-grid table[data-selected="promo"] .table-columns-header th[data-section="promo"],
-  .campaign-data-grid table[data-selected="price"] .table-columns-header th[data-section="price"],
-  .campaign-data-grid table[data-selected="increase"] .table-columns-header th[data-section="increase"] {
-    display: table-cell;
-  }
+    .table-columns-header th[data-section="general"],
+    table[data-selected="promo"] .table-columns-header th[data-section="promo"],
+    table[data-selected="price"] .table-columns-header th[data-section="price"],
+    table[data-selected="increase"] .table-columns-header th[data-section="increase"] {
+      display: table-cell;
+    }
 
-  .campaign-data-grid td[data-section="general"],
-  .campaign-data-grid .table-columns-header th[data-section="general"] {
-    width: 10%;
+    td[data-section="general"],
+    .table-columns-header th[data-section="general"] {
+      width: 10%;
+    }
   }
 }
 
 @media (max-width: $bp_phone) {
-  .campaign-data-grid tbody .cell-campaign .mobile-label {
-    display: none;
-  }
+  .campaign-data-grid {
+    tbody .cell-campaign .mobile-label {
+      display: none;
+    }
 
-  .campaign-data-grid tbody td:not([data-section="general"]) {
-    display: none;
-  }
+    tbody td {
+      padding-top: 5px;
 
-  .campaign-data-grid table[data-selected="promo"] tbody [data-section="promo"],
-  .campaign-data-grid table[data-selected="price"] tbody [data-section="price"],
-  .campaign-data-grid table[data-selected="increase"] tbody [data-section="increase"] {
-    display: grid;
-  }
+      &:not(.last-of-section):not([data-section="general"]) > * {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dfdfdf88;
+      }
+    }
 
-  .campaign-data-grid .cell-sales {
-    grid-column: 1/1;
-  }
+    tbody td:not([data-section="general"]) {
+      display: none;
+    }
 
-  .campaign-data-grid .cell-volume {
-    grid-column: 2/2;
-  }
+    tbody td[data-section="general"] + td {
+      padding-top: 15px;
+    }
 
-  .campaign-data-grid .cell-sales,
-  .campaign-data-grid .cell-volume {
-    display: flex;
-    align-items: center;
-    padding-top: 20px;
-    border-bottom: 1px solid #dfdfdf;
-    flex-direction: column-reverse;
-  }
+    table[data-selected="promo"] tbody [data-section="promo"],
+    table[data-selected="price"] tbody [data-section="price"],
+    table[data-selected="increase"] tbody [data-section="increase"] {
+      display: grid;
+    }
 
-  .campaign-data-grid .section-id {
-    padding: 15px 0 5px 0;
-  }
+    .cell-campaign {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
 
-  .campaign-data-grid .section-name {
-    padding-top: 3px;
-  }
+    .cell-sales {
+      grid-column: 1/1;
+    }
 
-  .campaign-data-grid .cell-sales .value,
-  .campaign-data-grid .cell-volume .value {
-    padding-top: 2px;
-    font-size: 23px;
-    color: #404040;
+    .cell-volume {
+      grid-column: 2/2;
+    }
+
+    .cell-sales,
+    .cell-volume {
+      display: flex;
+      align-items: center;
+      padding-top: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #dfdfdf;
+
+      .mobile-label:first-child {
+        padding: 0 10px 0 0;
+      }
+
+      .value {
+        padding-top: 2px;
+        font-size: 12px;
+        color: #404040;
+      }
+    }
+
+    .section-id {
+      padding: 15px 0 5px 0;
+    }
+
+    .section-name {
+      padding-top: 3px;
+    }
   }
 }

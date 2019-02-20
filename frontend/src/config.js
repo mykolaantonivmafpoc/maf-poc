@@ -61,7 +61,7 @@ const promoColumns = [
 ];
 export const productListTableDef = {
   groups: [
-    { name: 'General', id: 'general', columns: generalColumns },
+    { name: '', id: 'general', columns: generalColumns },
     { name: 'Increase', id: 'increase', columns: increaseColumns },
     { name: 'Price', id: 'price', columns: priceColumns },
     { name: 'Promo', id: 'promo', columns: promoColumns }

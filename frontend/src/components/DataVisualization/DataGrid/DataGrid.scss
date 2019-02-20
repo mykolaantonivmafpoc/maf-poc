@@ -227,7 +227,6 @@ table.data-grid thead th {
       }
 
       .active {
-        background-color: #f3eee4;
         border-bottom: 4px solid #b5975a;
       }
     }
@@ -238,7 +237,7 @@ table.data-grid thead th {
       width: 100vw;
 
       tr {
-        width: 100%;
+        width: calc(100% - 10px);
         display: grid;
         grid-template-columns: 1fr 1fr;
         background-color: #fff;
