@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './PageHeader.scss';
 import PropTypes from 'prop-types';
 
@@ -24,7 +25,7 @@ class PageHeader extends React.Component {
     if (filters.visible) {
       titleElement = (
         <div>
-          <h1>{pageTitle}</h1>
+          <Link className="small-title" to="/campaigns">{pageTitle}</Link>
           {filters.content}
         </div>
       );

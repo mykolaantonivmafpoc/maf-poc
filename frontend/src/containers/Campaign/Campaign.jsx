@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -140,7 +140,7 @@ class Campaign extends Component {
 
     return (
       <NavWrapper>
-        <PageHeader pageTitle={<Link className="small-title" to="/campaigns">{campaignsPageTitle}</Link>} filters={filters}/>
+        <PageHeader pageTitle={campaignsPageTitle} filters={filters}/>
         <SettingsPopup kpi={campaign.kpi} onChange={this.setGraphAxes} x={x} y={y}/>
         <CampaignBubbleChart data={products} x={x} y={y} z={z} className="campaign-chart"/>
         <DataGrid data={data} className="campaign-data-grid"/>

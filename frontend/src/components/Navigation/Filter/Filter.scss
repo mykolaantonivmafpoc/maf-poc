@@ -88,16 +88,39 @@
   }
 
   /* Buttons */
-  .custom-button.apply {
-    background: black;
-    color: white;
-    border: none;
-  }
+  .buttons-wrapper {
+    .custom-button.apply {
+      background: black;
+      color: white;
+      border: none;
+    }
 
-  .custom-button.clear {
-    background: white;
-    color: black;
-    border: 2px solid #dfdfdf;
+    .custom-button.apply:focus,
+    .custom-button.apply:active {
+      background: white;
+      color: black;
+      border: 2px solid #dfdfdf;
+      outline: none;
+    }
+
+    .custom-button.clear {
+      background: white;
+      color: black;
+      border: 2px solid #dfdfdf;
+    }
+
+    .custom-button.clear:focus,
+    .custom-button.clear:active {
+      background: black;
+      color: white;
+      border: none;
+      outline: none;
+    }
+
+    .custom-button.clear:active:focus,
+    .custom-button.apply:active:focus {
+      box-shadow: none;
+    }
   }
 
   /* Date Picker */

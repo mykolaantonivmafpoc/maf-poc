@@ -34,7 +34,7 @@ const MainNav = ({
         <Link to="/">Value-based Section</Link>
       </li>
       <li className="nav-item user-settings">
-        <Link to="/">User Settigns</Link>
+        <Link to="/">User Profile</Link>
       </li>
       <li className="nav-item increase-nav" onClick={showMainNav} />
       <li className="nav-item decrease-nav" onClick={hideMainNav}>

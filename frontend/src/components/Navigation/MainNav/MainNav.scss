@@ -29,14 +29,29 @@
   }
 
   .user-settings {
-    background-image: url("./user.svg");
+    width: 80px;
+    height: 60px;
+    background-image: url("./user-profile.svg");
+    background-position: center;
+    background-size: 22px;
+    background-position-x: 27px;
     position: absolute;
+    border-top: 1px solid #212529;
+    line-height: 60px;
+    margin: 0;
+    font-size: 0;
   }
 
   .logout {
-    background-image: url("./log-out.svg");
     position: absolute;
-    bottom: 0;
+    bottom: 80px;
+    width: 80px;
+    height: 60px;
+    background-image: url("./log-out.svg");
+    background-position: center;
+    margin: 0;
+    line-height: 60px;
+    font-size: 0;
   }
 
   & li {
@@ -87,7 +102,7 @@
     width: 80px;
     background-color: #2f2e32;
 
-    li.nav-item {
+    li.nav-item:not(.logout):not(.user-settings) {
       width: 80px;
       height: 80px;
       margin: 0;
@@ -99,22 +114,11 @@
       }
     }
 
-    .user-settings {
-      border-top: 1px solid grey;
-    }
-
-    .logout {
-      display: none;
-      background-size: 33px;
-      position: absolute;
-      bottom: 0;
-    }
-
     .increase-nav {
       background-size: 15px;
       position: absolute;
       bottom: 0;
-      border-top: 1px solid grey;
+      border-top: 1px solid #212529;
     }
 
     .decrease-nav {
@@ -143,6 +147,11 @@
 
     .user-settings {
       bottom: 50px;
+      border: none;
+    }
+
+    .logout {
+      bottom: 0;
     }
 
     .close-btn {
@@ -172,9 +181,10 @@
         display: none;
       }
 
-      .logout {
+      li.logout {
         display: block;
-        background-size: 33px;
+        background-size: 23px;
+        background-position: 23px;
       }
     }
   }
@@ -186,16 +196,16 @@
       height: 80px;
       line-height: 80px;
       background-size: auto;
+
+      &.user-settings {
+        bottom: 140px;
+        border-top: 1px solid #212529;
+      }
     }
 
     .logo {
       background-color: #b5975a;
       background-image: url("./campaings-logo.png");
-    }
-
-    .user-settings {
-      bottom: 80px;
-      border-top: 1px solid #8d8d8d;
     }
 
     .close-btn {
@@ -215,12 +225,13 @@
 
       .decrease-nav {
         display: block;
-        border-top: 1px solid #8d8d8d;
+        border-top: 1px solid #212529;
         background-position-x: 25px;
       }
 
       .logout {
-        display: none;
+        display: block;
+        bottom: 80px;
       }
     }
   }
