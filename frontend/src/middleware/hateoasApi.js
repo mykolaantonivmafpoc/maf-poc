@@ -40,7 +40,6 @@ const callApi = async (endpoint, schema, verb, filter) => {
   if (response && response.error) {
     throw response;
   }
-  // temporary
   let resp = response;
   if (typeof response === 'string') {
     resp = JSON.parse(response);
