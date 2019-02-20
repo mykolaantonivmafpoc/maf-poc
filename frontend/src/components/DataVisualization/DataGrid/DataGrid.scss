@@ -132,10 +132,6 @@ table.data-grid thead th {
 
 @media (min-width: $bp_phone + 1px) and (max-width: $bp_desktop_l - 1px) {
   .data-grid {
-    &.table {
-      background-color: #fff;
-    }
-
     .table-header-groups {
       display: block;
       position: sticky;
@@ -145,11 +141,14 @@ table.data-grid thead th {
 
       th {
         display: inline-block;
+        padding-left: 0;
+        padding-right: 0;
         width: auto;
         margin: 0 20px;
         height: 60px;
         line-height: 50px;
         border: none;
+        cursor: pointer;
       }
 
       .active {
@@ -157,8 +156,27 @@ table.data-grid thead th {
       }
     }
 
+    &.table {
+      background-color: #fff;
+
+      .table-columns-header th {
+        padding-left: 20px;
+      }
+
+      td {
+        vertical-align: middle;
+
+        &:first-child {
+          padding-left: 20px;
+        }
+
+        &:last-child {
+          border-right: 1px solid #e2e2e2;
+        }
+      }
+    }
+
     .table-columns-header th:last-child,
-    td:last-child,
     .last-of-section {
       border-right: 1px solid #e2e2e2;
     }

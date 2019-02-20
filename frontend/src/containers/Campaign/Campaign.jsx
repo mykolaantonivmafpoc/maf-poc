@@ -70,13 +70,7 @@ class Campaign extends Component {
   onFilterChange(id) {
     const { history } = this.props;
     if (id > -1) {
-      const path = document.location.pathname.split('/');
-      path.pop();
-      path.push(id);
-      history.push({
-        pathname: path.join('/'),
-        search: ''
-      });
+      history.push(`/campaign/${id}`);
     }
   }
 
