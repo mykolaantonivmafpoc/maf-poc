@@ -5,6 +5,8 @@ import {
   defOptions
 } from '../config';
 
+import authservice from './authService';
+
 class RestClient {
   API_ROOT = API_ROOT;
 
@@ -59,13 +61,14 @@ class RestClient {
 
   sendQuery(url, method, data, getParams = {}, options = {}, headers = {}) {
     let out;
+    const { authdata } = authservice.getUser();
 
     if (['GET', 'POST', 'PUT', 'DELETE', 'HEAD'].indexOf(method) > -1) {
       const reqHeaders = new Headers(Object.assign(
         {},
         this.defHeaders,
         headers,
-        { Authorization: 'Basic YXBpdXNlcjphcGlwYXNz' },
+        { Authorization: `Basic ${authdata}` },
       ));
 
       const reqOptions = Object.assign({ method }, this.defOptions, options);

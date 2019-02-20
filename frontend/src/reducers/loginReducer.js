@@ -10,9 +10,9 @@ export default (state = JSON.parse(localStorage.getItem('user')), action) => {
   let out = state;
   switch (action.type) {
     case LOGIN_SUCCESS:
+    case LOGIN_FAILURE:
       out = action.response;
       break;
-    case LOGIN_FAILURE:
     case LOGOUT:
       out = null;
       break;

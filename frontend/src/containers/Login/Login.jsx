@@ -8,6 +8,7 @@ import FormCheck from 'react-bootstrap/FormCheck';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import optionsAction from '../../actions/HATEOASActions';
 
 import { authenticate } from '../../actions/userActions';
 
@@ -26,7 +27,8 @@ class Login extends Component {
         from: PropTypes.shape({})
       })
     }).isRequired,
-    authenticate: PropTypes.func.isRequired
+    authenticate: PropTypes.func.isRequired,
+    optionsAction: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -35,22 +37,31 @@ class Login extends Component {
 
   state = {
     username: '',
-    password: '',
-    validated: false
+    password: ''
   };
+
+  componentDidUpdate() {
+    const { login, optionsAction: options } = this.props;
+
+    if (login && login.authdata) {
+      options();
+    }
+  }
 
   login = (event) => {
     const { authenticate: auth } = this.props;
     const { username, password } = this.state;
 
-    auth({ username, password });
+    event.preventDefault();
+    event.stopPropagation();
 
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+    if (username !== '' && password !== '') {
+      auth({ username, password });
     }
-    this.setState({ validated: true });
+    this.setState({
+      username: '',
+      password: ''
+    });
   };
 
   handleChange = event => {
@@ -62,7 +73,7 @@ class Login extends Component {
   render() {
     const { login, location: { state } } = this.props;
     const { from } = state || { from: { pathname: '/' } };
-    const { username, password, validated } = this.state;
+    const { username, password } = this.state;
 
     if (login && login.authdata) {
       return <Redirect to={from} />;
@@ -70,10 +81,15 @@ class Login extends Component {
 
     return (
       <section className="login-wrapper">
-        <Form className="form-signin" validated={validated} noValidate>
+        <Form className="form-signin" onSubmit={(e) => this.login(e)} noValidate>
           <img className="mb-4" src={logo} alt="" width="72" height="72"/>
           <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
           <div>
+            {login instanceof Error && (
+              <div className="custom-invalid-feedback">
+                {login.message}
+              </div>
+            )}
             <Form.Group>
               <Form.Label htmlFor="inputUsername" className="sr-only">Username</Form.Label>
               <FormControl
@@ -95,9 +111,6 @@ class Login extends Component {
                 value={password}
                 onChange={this.handleChange}
               />
-              <Form.Control.Feedback type="invalid">
-                Please provide valid credentials.
-              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="ml-1 mt-4 mb-4">
               <FormCheck>
@@ -107,8 +120,7 @@ class Login extends Component {
             </Form.Group>
             <Button
               className="btn btn-lg btn-primary btn-block"
-              type="button"
-              onClick={(e) => this.login(e)}
+              type="submit"
             >
               Sign in
             </Button>
@@ -129,7 +141,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  authenticate
+  authenticate,
+  optionsAction: () => (
+    dispatch => (
+      optionsAction(dispatch)
+    )
+  )
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

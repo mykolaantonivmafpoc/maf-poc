@@ -9,12 +9,6 @@
   padding: 40px 0;
 }
 
-.btn-primary.btn-lg {
-  background: #b5975a;
-  border-color: #b5975a;
-  border-radius: 0;
-}
-
 .form-signin {
   text-align: center;
   width: 100%;
@@ -35,7 +29,7 @@
   position: relative;
   box-sizing: border-box;
   height: auto;
-  padding: 10px;
+  padding: 12px 10px;
   font-size: 16px;
   border-radius: 0;
 }
@@ -46,4 +40,36 @@
 
 .form-check {
   margin-top: 20px;
+}
+
+.form-signin .btn-primary.btn-lg {
+  background: #b5975a;
+  border-color: #b5975a;
+  border-radius: 0;
+  height: 50px;
+}
+
+.form-signin .btn-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(156, 120, 61, 0.5);
+}
+
+.form-signin .btn-primary:focus,
+.form-signin .btn-primary:hover,
+.form-signin .btn.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: #9c783d;
+  border-color: #9c783d;
+}
+
+.custom-control-input:checked ~ label.custom-control-label::before {
+  font-size: 20px;
+  border-color: #9c783d;
+  background-color: #9c783d;
+}
+
+.custom-invalid-feedback {
+  display: block;
+  height: 30px;
+  background-color: #ef1538;
+  font-size: 12px;
+  padding: 5px 10px;
 }

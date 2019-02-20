@@ -13,7 +13,7 @@ class AuthService {
   }
 
   isLoggedIn() {
-    return (this.user && this.user.authdata);
+    return !!(this.user && typeof this.user === 'object' && this.user.authdata);
   }
 }
 

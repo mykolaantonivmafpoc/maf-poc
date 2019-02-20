@@ -1,4 +1,7 @@
 import RESTClient from './RESTClient';
+import authService from './authService';
+
+authService.setUser({});
 
 describe('RESTClient', () => {
   it('rejects the wrong HTTP types', () => {

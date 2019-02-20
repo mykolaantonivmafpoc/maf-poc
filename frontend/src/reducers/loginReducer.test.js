@@ -29,7 +29,7 @@ describe('login reducer', () => {
       password: 'apipass'
     };
 
-    expect(login(user, { type: constants.LOGIN_FAILURE })).toBeNull();
+    expect(login(user, { type: constants.LOGIN_FAILURE })).toBeUndefined();
     expect(authSpy).toHaveBeenCalled();
   });
 });
