@@ -1,8 +1,11 @@
+@import '../../../Vars.scss';
+
 #dialog-body {
   border: none;
   border-radius: 0;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  min-width: 312px;
+  width: 340px;
+  max-width: inherit;
   padding: 30px;
   margin-top: 4px;
 
@@ -21,37 +24,23 @@
 
 .settings-popup {
   .btn-settings {
-    position: relative;
-    z-index: 9;
-    top: 48px;
+    position: absolute;
+    height: 26px;
+    top: 98px;
     right: 20px;
-    float: right;
     color: #fff;
-    background-color: #fff;
     border: none;
+    background-color: transparent;
     background-image: url("./settings.svg");
     background-size: 17px;
     background-position: center;
     background-repeat: no-repeat;
-    height: 26px;
-  }
+    z-index: 9;
+    opacity: 0.8;
+    transition: opacity $hover_animation_duration;
 
-  .custom-button {
-    width: 100px;
-    height: 30px;
-
-    &.apply {
-      margin-right: 20px;
-      background: black;
-      border: none;
-      font-family: OpenSans-Semibold, sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.27;
-      letter-spacing: normal;
-      color: #fff;
+    &:hover {
+      opacity: 1;
     }
 
     &.clear {
@@ -67,12 +56,10 @@
       color: #2f2e32;
       padding: 3px 15px;
     }
+  }
 
-    &.clear:hover {
-      color: #2f2e32;
-      background-color: white;
-      border-color: #dfdfdf;
-    }
+  .custom-button.apply {
+    margin-right: 22px;
   }
 }
 

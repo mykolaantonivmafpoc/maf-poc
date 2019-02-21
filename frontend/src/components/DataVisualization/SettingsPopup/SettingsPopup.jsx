@@ -95,7 +95,7 @@ class SettingsPopup extends Component {
               <Button variant="dark" className="custom-button apply" onClick={this.apply}>
                 APPLY
               </Button>
-              <Button variant="outline-dark" className="custom-button clear" onClick={this.close}>
+              <Button variant="light" className="custom-button clear" onClick={this.close}>
                 CANCEL
               </Button>
             </Col>

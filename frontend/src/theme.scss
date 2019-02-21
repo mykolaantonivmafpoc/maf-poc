@@ -1,3 +1,5 @@
+@import 'Vars.scss';
+
 /* Form Controls */
 .form-control,
 .btn {
@@ -45,6 +47,7 @@ a:focus {
   box-sizing: border-box;
   text-transform: uppercase;
   font-weight: 600;
+  font-family: $font_family_main;
 }
 
 /* On Focus */

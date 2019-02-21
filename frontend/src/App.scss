@@ -1,3 +1,5 @@
+@import 'Vars.scss';
+
 /* Fonts */
 
 @font-face {
@@ -19,6 +21,6 @@
 }
 
 body {
-  font-family: OpenSans, sans-serif;
+  font-family: $font_family_main;
   background-color: #fafafa;
 }

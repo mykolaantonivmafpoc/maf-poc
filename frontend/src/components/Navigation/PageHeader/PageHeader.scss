@@ -1,8 +1,10 @@
+@import '../../../Vars.scss';
+
 .page-header {
   display: flex;
   align-items: center;
   height: 80px;
-  padding: 0 30px;
+  padding: 0 30px 10px 30px;
   background-color: #fafafa;
 
   .title-wrapper {
@@ -30,7 +32,8 @@
     background-image: url('./search.svg');
     background-repeat: no-repeat;
     background-position: center center;
-    transition: opacity 0.3s;
+    transform: translate(0, 5px);
+    transition: opacity $hover_animation_duration;
     cursor: pointer;
 
     &:hover {
