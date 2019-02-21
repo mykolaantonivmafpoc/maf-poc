@@ -68,3 +68,17 @@ export const productListTableDef = {
   ],
   selectedGroupId: 'increase'
 };
+export const mockedUsers = [
+  {
+    username: 'apiuser',
+    password: 'apipass',
+    firstName: 'John',
+    lastName: 'Smith'
+  },
+  {
+    username: 'adminUser',
+    password: 'apipass',
+    firstName: 'Jane',
+    lastName: 'Doe'
+  }
+];
