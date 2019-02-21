@@ -1,11 +1,10 @@
-import string, random, json, os, decimal # NOQA
-import logging, sys # NOQA
-from datetime import datetime as dt # NOQA
-from flask import Flask, jsonify, g, url_for as _url_for # NOQA
-from flask import request, make_response, Blueprint # NOQA
+import os
+import json
+import logging
+from flask import Flask
+from flask import url_for as _url_for
+from flask import request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import PrimaryKeyConstraint # NOQA
-from sqlalchemy.sql import func # NOQA
 from flask_marshmallow import Marshmallow
 from flask_monitor import Monitor, ObserverLog
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -37,25 +36,16 @@ def url_for(endpoint, **values):
     return url
 
 
-# will force BASIC_AUTH_FORCE in the config
 # swagger settings
-SWAGGER_URL = '/v1/docs'  # the docs will be at /v1/docs/dist/
+SWAGGER_URL = '/v1/docs'  # the docs will be at /v1/docs/
 API_URL = '/v1/swagger.json'
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
     config={  # Swagger UI config overrides
-        'app_name': "Test API"
+        'app_name': 'MAF POC API'
     },
-    # oauth_config={
-    #    'clientId': "your-client-id",
-    #    'clientSecret': "your-client-secret-if-required",
-    #    'realm': "your-realms",
-    #    'appName': "your-app-name",
-    #    'scopeSeparator': " ",
-    #    'additionalQueryStringParams': {'test': "hello"}
-    # }
 )
 
 
@@ -71,36 +61,28 @@ class myeventlog(ObserverLog):
         return event.response.status_code != 400
 
 
-# api = Blueprint('api', 'api', url_prefix='/v1/api')
 app = Flask(__name__)
 
 # Configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = \
-    os.getenv('SQLALCHEMY_DATABASE_URI', default='sqlite:////tmp/test.db')
+    os.getenv('SQLALCHEMY_DATABASE_URI', default='sqlite:///:memory:')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 if app.debug:
     app.config['SQLALCHEMY_ECHO'] = True
 
-# cors = CORS(
-#     app,
-#     resources={r"/*": {
-#         "origins": os.getenv('CORS_ORIGINS', default="*")
-#     }}
-# )
-
 
 stub_auth_list = {
-    "apiuser": {
+    'apiuser': {
         'password': 'apipass',
-        "acl": {
+        'acl': {
             '/': ['GET', 'OPTIONS'],
             '/v1/campaigns/': ['GET', 'OPTIONS'],
             '/v1/campaigns/<int:id>/': ['GET', 'OPTIONS'],
         }
     },
-    "adminUser": {
+    'adminUser': {
         'password': 'apipass',
-        "acl": {
+        'acl': {
             '/': ['GET', 'OPTIONS'],
             '/v1/campaigns/': ['GET', 'POST', 'OPTIONS'],
             '/v1/campaigns/<int:id>/': ['GET', 'PUT', 'DELETE', 'OPTIONS'],
@@ -114,14 +96,6 @@ current_user = {}
 class BasicAuth(OldBasicAuth):
 
     def check_credentials(self, username, password):
-
-        print(
-            "{} {}:{}@{}".format(
-                request.method,
-                username,
-                password,
-                request.url_rule.rule
-            ), file=sys.stderr)
 
         if username in stub_auth_list:
             user = stub_auth_list[username]
@@ -140,6 +114,7 @@ class BasicAuth(OldBasicAuth):
 
 @app.after_request
 def after_request(response):
+    # TODO: limit CORS to real domain names
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Allow', 'OPTIONS,GET,HEAD,POST,PUT,DELETE')
     response.headers.add(
@@ -153,16 +128,14 @@ def after_request(response):
     return response
 
 
-# Define the database object which is imported
-# by modules and controllers
+# Define the database object which is imported by modules and controllers,
+# set up Monitor, Swagger and Marshmellow
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 basic_auth = BasicAuth(app)
-# @basic_auth.required
 monitor = Monitor('monitor', __name__)
 app.register_blueprint(monitor)
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-# app.register_blueprint(api)
 monitor.add_observer(myeventlog())
 
 
@@ -179,7 +152,7 @@ from .controller import campaign # NOQA
 @app.route('/', methods=['GET'])
 @basic_auth.required
 def listVersion():
-    return json.dumps({"Campaigns": url_for('listCampaign')})
+    return json.dumps({'Campaigns': url_for('listCampaign')})
 
 
 # Sample HTTP error handling

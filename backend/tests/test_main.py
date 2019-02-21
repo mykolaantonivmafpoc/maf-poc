@@ -1,31 +1,27 @@
-import sys
-from flask_testing import TestCase
-from werkzeug.test import Client
-from werkzeug.datastructures import Headers
-sys.path.append("..")
-from app.app import app, db # NOQA
-
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    'postgresql+psycopg2://postgres:dbpassword@postgres:5432/postgres'
+import pytest
 
 
-class AuthTest(TestCase):
+BAD_PASSWORD = 'Basic YXBpdXNlcmFzZGFzZDphcGlwYXNz'
+USER_PASSWORD = 'Basic YXBpdXNlcjphcGlwYXNz'
+ADMIN_PASSWORD = 'Basic YWRtaW5Vc2VyOmFwaXBhc3M='
 
-    def create_app(self):
-        return app
 
-    def test_campaign_page_rejects_bad_password(self):
-        h = Headers()
-        h.add('Authorization',
-              'Basic YXBpdXNlcmFzZGFzZDphcGlwYXNz')
-        rv = Client.open(self.client, path='/v1/campaigns/',
-                         headers=h)
-        self.assert_401(rv)
-
-    def test_single_campaign_page_rejects_bad_password(self):
-        h = Headers()
-        h.add('Authorization',
-              'Basic YXBpdXNlcmFzZGFzZDphcGlwYXNz')
-        rv = Client.open(self.client, path='/v1/campaigns/1/',
-                         headers=h)
-        self.assert_401(rv)
+@pytest.mark.parametrize(('path', 'password', 'method', 'result'), (
+    ('/', BAD_PASSWORD, 'GET', 401),
+    ('/v1/campaigns/', BAD_PASSWORD, 'GET', 401),
+    ('/v1/campaigns/1/', BAD_PASSWORD, 'GET', 401),
+    ('/v1/campaigns/', USER_PASSWORD, 'POST', 405),
+    ('/v1/campaigns/1/', USER_PASSWORD, 'PUT', 405),
+    ('/', USER_PASSWORD, 'GET', 200),
+    ('/', USER_PASSWORD, 'OPTIONS', 200),
+    ('/v1/campaigns/', ADMIN_PASSWORD, 'POST', 405),
+    ('/v1/campaigns/1/', ADMIN_PASSWORD, 'PUT', 405),
+))
+def test_api_authentication(client, path, password, method, result):
+    rv = client.open(
+        path=path,
+        headers=[('Authorization', password)],
+        method=method
+    )
+    print(rv)
+    assert rv.status_code == result

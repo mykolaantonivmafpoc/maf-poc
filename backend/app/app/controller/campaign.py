@@ -1,5 +1,8 @@
+from flask import jsonify
+from sqlalchemy.sql import func
+
 from .. import app, spec, basic_auth
-from .. import db, func, url_for, jsonify
+from .. import db, url_for
 from ..model import kpi_list, buildMetaOptionsQuery
 from ..model import create_frame, buildMetaOptions
 from ..model import buildArgumentFilter
@@ -20,7 +23,7 @@ def listCampaign():
             200:
                 description: Returns list of all campaigns.
     """
-    frame = create_frame() # NOQA
+    frame = create_frame()
 
     frame['meta']['type'] = 'Campaigns'
     frame['meta']['kpis'] = kpi_list
@@ -70,7 +73,7 @@ def listCampaign():
         kpis = x['kpis']
 
         del x['kpis']
-        elem = {**x, **kpis} # NOQA
+        elem = {**x, **kpis}
         frame['content'].append(elem)
 
     frame['_links'] = {
@@ -99,7 +102,7 @@ def listCampaignItem(id):
             200:
                 description: single campaignCollection to be returned.
     """
-    frame = create_frame() # NOQA
+    frame = create_frame()
     args = {
         'id': id
     }

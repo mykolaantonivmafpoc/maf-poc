@@ -1,5 +1,6 @@
-from .. import app, basic_auth, db, ma, spec, dt, PrimaryKeyConstraint # NOQA
-from marshmallow import fields # NOQA
+from datetime import datetime as dt
+
+from .. import db
 from .. import request
 
 
@@ -95,17 +96,17 @@ def buildMetaOptions(meta_options_query):
     meta_options_exanded = {}
 
     meta_options = [
-            # 'campaign',
-            # 'product',
-            # 'supplier',
-            # 'promo_mechanic',
-            # 'campaign_kpi_metric',
-            'department',
-            'section',
-            'family_category',
-            'sub_family_category',
-            'timestamp',
-        ]
+        # 'campaign',
+        # 'product',
+        # 'supplier',
+        # 'promo_mechanic',
+        # 'campaign_kpi_metric',
+        'department',
+        'section',
+        'family_category',
+        'sub_family_category',
+        'timestamp',
+    ]
 
     for i in meta_options:
 
