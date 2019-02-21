@@ -2,6 +2,7 @@ import os
 import json
 import logging
 from flask import Flask
+from flask import jsonify
 from flask import url_for as _url_for
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
@@ -152,7 +153,7 @@ from .controller import campaign # NOQA
 @app.route('/', methods=['GET'])
 @basic_auth.required
 def listVersion():
-    return json.dumps({'Campaigns': url_for('listCampaign')})
+    return jsonify({'Campaigns': url_for('listCampaign')})
 
 
 # Sample HTTP error handling
