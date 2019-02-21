@@ -8,58 +8,75 @@
 }
 
 .left-menu-wrapper {
-  .dashboard {
+  & li {
+    background-repeat: no-repeat;
+    background-position-y: center;
+
+    &.small {
+      height: 60px;
+      line-height: 60px;
+    }
+
+    & a {
+      display: block;
+      background-repeat: no-repeat;
+      background-position-y: center;
+      background-position-x: 25px;
+    }
+
+    &:not(.logo):hover {
+      background-color: #3a393c;
+      cursor: pointer;
+    }
+  }
+
+  .dashboard a {
     background-image: url("./dashboard.svg");
+    background-position-x: 25px;
   }
 
-  .campaigns {
+  .campaigns a {
     background-image: url("./campaigns.svg");
+    background-position-x: 25px;
   }
 
-  .value-based {
+  .value-based a {
     background-image: url("./group-9.svg");
+    background-position-x: 25px;
   }
 
-  .decrease-nav {
-    background-image: url("arrow-left.svg");
-  }
-
-  .increase-nav {
+  .expand {
     background-image: url("./arrow-right.svg");
+    background-position-x: 25px;
+  }
+
+  .collapse {
+    position: absolute;
+
+    a {
+      background-image: url("arrow-left.svg");
+    }
   }
 
   .user-settings {
-    width: 80px;
-    height: 60px;
-    background-image: url("./user-profile.svg");
-    background-position: center;
-    background-size: 22px;
-    background-position-x: 27px;
     position: absolute;
-    border-top: 1px solid #212529;
-    line-height: 60px;
-    margin: 0;
-    font-size: 0;
+    bottom: 80px;
+
+    a {
+      width: 100%;
+      background-image: url("./user-profile.svg");
+      background-position-x: 28px;
+      position: absolute;
+    }
   }
 
   .logout {
     position: absolute;
     bottom: 80px;
-    width: 80px;
-    height: 60px;
-    background-image: url("./log-out.svg");
-    background-position: center;
-    margin: 0;
-    line-height: 60px;
-    font-size: 0;
-  }
 
-  & li {
-    background-repeat: no-repeat;
-
-    &:not(.logo):hover {
-      background-color: #3a393c;
-      cursor: pointer;
+    a {
+      background-image: url("./log-out.svg");
+      background-position-x: 30px;
     }
   }
 
@@ -70,12 +87,14 @@
 
     li.nav-item {
       width: 100%;
-      background-position: 20px;
-      padding-left: 70px;
       font-size: 16px;
+      background-position-y: center;
 
       a {
         color: #8d8d8d;
+        width: 100%;
+        padding-left: 70px;
+        // background-position-x: 25px;
       }
     }
 
@@ -84,16 +103,14 @@
       color: #8d8d8d;
     }
 
-    .decrease-nav {
-      background-size: 15px;
-      position: absolute;
+    .expand {
+      display: none;
+    }
+
+    .collapse {
       bottom: 0;
       display: block;
       color: #8d8d8d;
-    }
-
-    .increase-nav {
-      display: none;
     }
   }
 
@@ -102,26 +119,37 @@
     width: 80px;
     background-color: #2f2e32;
 
-    li.nav-item:not(.logout):not(.user-settings) {
-      width: 80px;
-      height: 80px;
+    .maf-logo {
+      display: none;
+    }
+
+    li.nav-item {
+      width: 100%;
       margin: 0;
       background-position: center;
       font-size: 0;
 
+      &:not(.small) {
+        width: 80px;
+        height: 80px;
+      }
+
       .close-btn {
         display: none;
       }
+
+      a {
+        background-position: center;
+      }
     }
 
-    .increase-nav {
-      background-size: 15px;
+    .expand {
       position: absolute;
       bottom: 0;
       border-top: 1px solid #212529;
     }
 
-    .decrease-nav {
+    .collapse {
       display: none;
     }
   }
@@ -132,7 +160,6 @@
     li {
       height: 50px;
       line-height: 50px;
-      background-size: 27px;
 
       &.logo {
         height: 70px;
@@ -140,7 +167,11 @@
       }
     }
 
-    .logo {
+    .maf-logo {
+      width: 0;
+    }
+
+    .logo a {
       background-color: #2f2e32;
       background-image: url("./logo-gold.png");
     }
@@ -148,17 +179,19 @@
     .user-settings {
       bottom: 50px;
       border: none;
-    }
 
-    .logout {
-      bottom: 0;
+      // a {
+      //   background-position-x: 28px;
+      // }
     }
 
     .close-btn {
+      padding-right: 10px;
+      position: absolute;
+      top: 0;
       width: 100%;
-      display: inline-block;
       text-align: right;
-      padding-right: 15px;
+      line-height: 60px;
     }
 
     &.nav-hidden {
@@ -169,22 +202,21 @@
       width: 285px;
 
       .logo {
-        background-position-x: 25px;
-        background-size: 33px;
+        // background-position-x: 25px;
 
         a {
           font-size: 0;
         }
       }
 
-      .decrease-nav {
+      .collapse {
         display: none;
       }
 
       li.logout {
         display: block;
-        background-size: 23px;
-        background-position: 23px;
+        bottom: 0;
+        // background-position: 23px;
       }
     }
   }
@@ -195,7 +227,6 @@
     li {
       height: 80px;
       line-height: 80px;
-      background-size: auto;
 
       &.user-settings {
         bottom: 140px;
@@ -203,7 +234,8 @@
       }
     }
 
-    .logo {
+    .logo a {
+      height: 80px;
       background-color: #b5975a;
       background-image: url("./campaings-logo.png");
     }
@@ -214,7 +246,8 @@
 
     &.nav-shown {
       li.logo {
-        background-position-x: 20px;
+        // background-position-x: 25px;
+        background-position-y: center;
 
         a {
           color: #fff;
@@ -223,10 +256,10 @@
         }
       }
 
-      .decrease-nav {
+      .collapse {
         display: block;
         border-top: 1px solid #212529;
-        background-position-x: 25px;
+        // background-position-x: 25px;
       }
 
       .logout {

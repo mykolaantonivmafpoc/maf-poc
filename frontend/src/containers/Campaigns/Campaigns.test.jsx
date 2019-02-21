@@ -116,7 +116,6 @@ describe('Campaigns Component', () => {
   });
 
   it('should render the Campaigns component and its children without throwing an error', () => {
-    // debugger;
     expect(wrapper.find('Campaigns')).toHaveLength(1);
     expect(wrapper.find('NavWrapper')).toHaveLength(1);
     expect(wrapper.find('PageHeader')).toHaveLength(1);

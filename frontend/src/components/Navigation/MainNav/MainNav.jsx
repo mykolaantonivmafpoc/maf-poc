@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import './MainNav.scss';
 import cancel from './cancel-white.svg';
+import mafLogo from './maf-logo.svg';
 
 const MainNav = ({
   removeMainNav,
@@ -19,7 +20,9 @@ const MainNav = ({
   >
     <ul className="nav flex-column">
       <li className="nav-item logo">
-        <Link to="/">Majid Al Futtaim</Link>
+        <Link to="/">
+          <img alt="Majid Al Futtaim" className="maf-logo" src={mafLogo} />
+        </Link>
         <span onClick={removeMainNav} className="close-btn float-right">
           <img alt="cancel" src={cancel} />
         </span>
@@ -33,15 +36,15 @@ const MainNav = ({
       <li className="nav-item value-based">
         <Link to="/">Value-based Section</Link>
       </li>
-      <li className="nav-item user-settings">
-        <Link to="/">User Profile</Link>
+      <li className="nav-item user-settings small">
+        <a href="#noacation">User Profile</a>
       </li>
-      <li className="nav-item increase-nav" onClick={showMainNav} />
-      <li className="nav-item decrease-nav" onClick={hideMainNav}>
-        Collapse Side Bar
+      <li className="nav-item expand" onClick={showMainNav} />
+      <li className="nav-item collapse" onClick={hideMainNav}>
+        <a href="#noacation">Collapse Side Bar</a>
       </li>
-      <li className="nav-item logout" onClick={logout}>
-        Logout
+      <li className="nav-item logout small" onClick={logout}>
+        <a href="#noacation">Logout</a>
       </li>
     </ul>
   </aside>

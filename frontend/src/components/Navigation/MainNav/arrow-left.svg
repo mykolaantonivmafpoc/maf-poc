@@ -1,6 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="15" height="25" viewBox="0 0 15 25">
-    <g fill="none" fill-rule="evenodd" opacity=".3">
-        <path d="M-8-3h30v30H-8z"/>
-        <path fill="#FFF" d="M14.587 2.213L12.375 0 0 12.375 12.375 24.75l2.212-2.212L4.425 12.375z"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.300000012">
+        <g id="Arrow-Collapse-Ico">
+            <polygon id="Path" points="0 0 30 0 30 30 0 30"></polygon>
+            <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" transform="translate(19.750000, 14.250000) scale(-1, 1) rotate(-315.000000) translate(-19.750000, -14.250000) " points="23.5 10.5 13 10.5 13 7.5 26.5 7.5 26.5 21 23.5 21"></polygon>
+        </g>
     </g>
 </svg>

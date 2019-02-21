@@ -3,12 +3,18 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { mount } from 'enzyme';
 import { shape } from 'prop-types';
+import thunk from 'redux-thunk';
 
+import HATEOASApi from '../../middleware/hateoasApi';
 import NavWrapper from './NavWrapper';
 
 describe('NavWrapper Component', () => {
+  const loadAllCampaigns = jest.fn();
+  const loadCampaign = jest.fn();
+
+  jest.mock('../../actions/campaignActions');
   const mockProps = {
-    navigation: {},
+    navigation: { filterShown: true },
     data: {
       singleCampaign: {
         content: [1, 2, 3, 4],
@@ -25,7 +31,8 @@ describe('NavWrapper Component', () => {
     showMainNav: jest.fn(),
     removeMainNav: jest.fn(),
     hideMainNav: jest.fn(),
-    loadCampaign: jest.fn(),
+    loadCampaign,
+    loadAllCampaigns,
     logout: jest.fn()
   };
 
@@ -67,19 +74,22 @@ describe('NavWrapper Component', () => {
   let store;
   let wrapper;
 
-  const mockStore = configureStore(mockProps);
+  const mockStore = configureStore([thunk, HATEOASApi]);
+  const instanceProps = { ...mockProps, match: { path: '/campaigns' }, loadAllCampaigns, loadCampaign };
 
   beforeEach(() => {
     store = mockStore(mockProps);
     wrapper = mount(
       <Provider store={store}>
-        <NavWrapper {...mockProps} />
+        <NavWrapper {...instanceProps} />
       </Provider>,
       options
     );
   });
 
-  it('Render NavWrapper component', () => {
+  it('render correctly on Desktop resolutions: NavWrap and MainNav are shown', () => {
     expect(wrapper.find('NavWrapper')).toBeDefined();
+    expect(wrapper.find('MainNav')).toHaveLength(1);
+    expect(wrapper.find('MobileNav')).toHaveLength(1);
   });
 });
