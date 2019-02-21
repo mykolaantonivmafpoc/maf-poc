@@ -13,7 +13,6 @@ const composeEnhancers = compose;
 const appStore = () => {
   const combinedInitialState = {
     ...initialState,
-    // more states to come?
   };
 
   return createStore(

@@ -19,13 +19,13 @@ const MainNav = ({
   >
     <ul className="nav flex-column">
       <li className="nav-item logo">
-        <Link to="/">Majid Al Futtam</Link>
+        <Link to="/">Majid Al Futtaim</Link>
         <span onClick={removeMainNav} className="close-btn float-right">
           <img alt="cancel" src={cancel} />
         </span>
       </li>
       <li className="nav-item dashboard">
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/">Dashboard</Link>
       </li>
       <li className="nav-item campaigns">
         <Link to="/campaigns">Campaigns</Link>

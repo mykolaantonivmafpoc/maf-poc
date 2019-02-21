@@ -5,7 +5,7 @@ import { loadAllCampaigns } from '../../actions/campaignActions';
 import DataGrid from '../../components/DataVisualization/DataGrid';
 import PageHeader from '../../components/Navigation/PageHeader';
 import NavWrapper from '../NavWrapper';
-import { campaignListTableDef } from '../../config';
+import { campaignListTableDef, routeByName } from '../../config';
 import { formatDate } from '../../utils/dates/dates';
 
 import './Campaigns.scss';
@@ -117,7 +117,8 @@ class Campaigns extends Component {
       transformedRow.id = row.id;
 
       transformedRow.action = function action() {
-        history.push(`/campaign/${this.id}`);
+        const path = routeByName('campaign').path.replace(':id', this.id);
+        history.push(path);
         document.querySelector('.main-c').scrollTo(0, 0);
       };
 

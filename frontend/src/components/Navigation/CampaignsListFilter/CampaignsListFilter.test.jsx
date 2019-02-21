@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 import CampaignsListFilter from './CampaignsListFilter';
 
@@ -16,24 +17,30 @@ describe('Campaigns List Filter Component', () => {
     expect(wrapper.find('.campaigns-list-filter')).toBeTruthy();
   });
 
-  it('Should call the CB with the correct id', () => {
-    let recivedId;
-    const mockCallback = (id) => {
-      recivedId = id;
-    };
-    const filter = mount(<CampaignsListFilter campaigns={mockData} onFilterChange={mockCallback}/>);
-    const instance = filter.instance();
-    instance.setState({ selectedId: 2 });
-    instance.onSelectClicked();
-    filter.update();
+  it('should generate the expected amount of items', () => {
+    const filter = mount(
+      <MemoryRouter>
+        <Route>
+          <CampaignsListFilter campaigns={mockData}/>
+        </Route>
+      </MemoryRouter>
+    );
+    filter.find('.filter-title').simulate('click');
 
-    expect(recivedId).toBe(2);
+    expect(filter.find('a.list-group-item')).toHaveLength(mockData.length);
   });
 
-  it('shuld show the filter popover', () => {
-    const wrapper = mount(<CampaignsListFilter />);
+  it('should show the filter popover', () => {
+    const wrapper = mount(<MemoryRouter><Route><CampaignsListFilter /></Route></MemoryRouter>);
     wrapper.find('.filter-title').simulate('click');
 
     expect(wrapper.find('.popover')).toHaveLength(1);
+  });
+
+  it('should hide the filter popover', () => {
+    const wrapper = mount(<MemoryRouter><Route><CampaignsListFilter /></Route></MemoryRouter>);
+    wrapper.find(CampaignsListFilter).instance().closePopOver();
+
+    expect(wrapper.find('.popover')).toHaveLength(0);
   });
 });

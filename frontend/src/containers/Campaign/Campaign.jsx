@@ -45,33 +45,31 @@ class Campaign extends Component {
       loadCampaign: loadSingle,
       isFetchingOptions,
       isFetchingList,
-      match
+      match,
+      campaign
     } = props;
 
-    if (isFetchingList !== state.isFetchingList || isFetchingOptions !== state.isFetchingOptions) {
+    if (isFetchingList !== state.isFetchingList
+      || isFetchingOptions !== state.isFetchingOptions
+      || (campaign && campaign.id
+        && parseInt(campaign.id, 10) !== parseInt(match.params.id, 10)
+        && state.lastFetchedId !== match.params.id)
+    ) {
       if (isFetchingOptions === false && isFetchingList === undefined) {
         loadAll();
       }
       if (isFetchingList === false) {
         loadSingle({}, match.params.id);
       }
-      return { isFetchingOptions, isFetchingList };
+      return { isFetchingOptions, isFetchingList, lastFetchedId: match.params.id };
     }
 
     return null;
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.setGraphAxes = this.setGraphAxes.bind(this);
-    this.onFilterChange = this.onFilterChange.bind(this);
-  }
-
-  onFilterChange(id) {
-    const { history } = this.props;
-    if (id > -1) {
-      history.push(`/campaign/${id}`);
-    }
   }
 
   setGraphAxes(coords) {
@@ -131,7 +129,6 @@ class Campaign extends Component {
       visible: true,
       content: (
         <CampaignsListFilter
-          onFilterChange={this.onFilterChange}
           campaigns={campaigns}
           selectedCampaignName={campaign.name}
         />

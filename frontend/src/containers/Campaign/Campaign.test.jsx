@@ -131,10 +131,4 @@ describe('Selected Campaign page', () => {
     expect(result[0].promo).toBe('21.0000');
     expect(result[0].depth).toBe('0.3002');
   });
-
-  it('Should redirect to correct page', () => {
-    component_campaign.onFilterChange(3);
-
-    expect(component_campaign.props.history.location.pathname).toBe('/campaign/3');
-  });
 });

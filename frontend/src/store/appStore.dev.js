@@ -14,7 +14,6 @@ const composeEnhancers = composeWithDevTools;
 const appStore = () => {
   const combinedInitialState = {
     ...initialState
-    // more states to come?
   };
 
   return createStore(

@@ -1,19 +1,21 @@
 import React from 'react';
 import { InputGroup, FormControl, ListGroup } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
+import { routeByName } from '../../../config';
+
 import './SearchableComboList.scss';
 
 const DEBOUNCE_TIME = 200;
 
 class SearchableComboList extends React.Component {
   static propTypes = {
-    data: PropTypes.arrayOf(PropTypes.shape({})),
-    onSelect: PropTypes.func
+    data: PropTypes.arrayOf(PropTypes.shape({}))
   }
 
   static defaultProps = {
-    data: [],
-    onSelect: () => {}
+    data: []
   };
 
   constructor(props) {
@@ -38,17 +40,6 @@ class SearchableComboList extends React.Component {
     }, DEBOUNCE_TIME);
   }
 
-  onItemClicked = (e) => {
-    const id = +e.target.dataset.id;
-    const { onSelect } = this.props;
-
-    this.setState({
-      selectedId: id
-    });
-
-    onSelect(id);
-  }
-
   getAllOptions() {
     const { filteredOptions, selectedId } = this.state;
     const optionsToShow = filteredOptions.map(
@@ -60,15 +51,7 @@ class SearchableComboList extends React.Component {
         }
 
         return (
-          <ListGroup.Item
-            {...isActive}
-            action
-            key={item.id}
-            data-id={item.id}
-            onClick={this.onItemClicked}
-          >
-            {item.name}
-          </ListGroup.Item>
+          <Link to={routeByName('campaign').path.replace(':id', item.id)} key={item.id} className="list-group-item list-group-item-action">{item.name}</Link>
         );
       }
     );

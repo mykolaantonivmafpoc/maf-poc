@@ -64,6 +64,29 @@ const NavWrapper = ({
   );
 };
 
+const manualyDenormalizeProps = (data) => {
+  const { campaigns, campaignMeta, campaignsMeta, ...options } = data;
+  const kpi_options = {};
+
+  const kpi_options_raw = (campaigns && campaignMeta && campaigns[campaignMeta].kpi_options)
+    || (campaignsMeta && campaignsMeta.kpi_options)
+    || {};
+  Object.keys(kpi_options_raw).forEach(option => {
+    if (options[option]) {
+      kpi_options[option] = [...new Set(kpi_options_raw[option])].map(id => {
+        return options[option][id];
+      }).sort((a, b) => {
+        let out = 0;
+        if (a.name < b.name) { out = -1; }
+        if (a.name > b.name) { out = 1; }
+        return out;
+      });
+    }
+  });
+
+  return kpi_options;
+};
+
 const mapStateToProps = state => {
   const {
     navigation,
@@ -84,23 +107,17 @@ const mapStateToProps = state => {
     }
   } = state;
 
-  const options = { department, family_category, section, sub_family_category };
-  const kpi_options = {};
-
-  const kpi_options_raw = (campaigns && campaignMeta && campaigns[campaignMeta].kpi_options)
-    || (campaignsMeta && campaignsMeta.kpi_options)
-    || {};
-  Object.keys(kpi_options_raw).forEach(option => {
-    if (options[option]) {
-      kpi_options[option] = [...new Set(kpi_options_raw[option])].map(id => {
-        return options[option][id];
-      });
-    }
-  });
-
   return {
     navigation,
-    kpi_options
+    kpi_options: manualyDenormalizeProps({
+      campaigns,
+      campaignMeta,
+      campaignsMeta,
+      department,
+      family_category,
+      section,
+      sub_family_category
+    })
   };
 };
 

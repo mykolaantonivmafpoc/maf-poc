@@ -1,5 +1,6 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 import SearchableComboList from './SearchableComboList';
 
@@ -12,34 +13,36 @@ describe('Searchable Combo List Component', () => {
   ];
 
   it('should render the form without throwing an error', () => {
-    const wrapper = shallow(<SearchableComboList />);
+    const wrapper = mount(<MemoryRouter><Route><SearchableComboList /></Route></MemoryRouter>);
     expect(wrapper.find('.searchable-combo-list')).toBeTruthy();
   });
 
-  it('On item click, should call the CB function with the correct id', () => {
-    let recivedId;
-    const mockCallback = (id) => {
-      recivedId = id;
-    };
-    const comboList = shallow(<SearchableComboList data={mockData} onSelect={mockCallback}/>);
-    comboList.instance().onItemClicked({ target: { dataset: { id: 2 } } });
-
-    expect(recivedId).toBe(2);
-  });
-
   it('onQueryCleared called, should show all items', () => {
-    const comboList = mount(<SearchableComboList data={mockData} onSelect={() => {}}/>);
-    comboList.instance().onQueryCleared();
+    const comboList = mount(
+      <MemoryRouter>
+        <Route>
+          <SearchableComboList data={mockData}/>
+        </Route>
+      </MemoryRouter>
+    );
+    comboList.find(SearchableComboList).instance().onQueryCleared();
     comboList.update();
 
-    expect(comboList.find('.combo-list button')).toHaveLength(4);
+    expect(comboList.find('.combo-list a')).toHaveLength(4);
   });
 
   it('Shuld filter correctly on query change', () => {
-    const comboList = mount(<SearchableComboList data={mockData} onSelect={() => {}}/>);
-    comboList.instance().filterListByQuery('onth');
+    const comboList = mount(
+      <MemoryRouter>
+        <Route>
+          <SearchableComboList data={mockData}/>
+        </Route>
+      </MemoryRouter>
+    );
+
+    comboList.find(SearchableComboList).instance().filterListByQuery('onth');
     comboList.update();
 
-    expect(comboList.find('.combo-list button')).toHaveLength(1);
+    expect(comboList.find('.combo-list a')).toHaveLength(1);
   });
 });
