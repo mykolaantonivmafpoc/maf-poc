@@ -20,7 +20,7 @@ class Filter extends Component {
     hideFilter: PropTypes.func.isRequired,
     options: PropTypes.shape({}).isRequired,
     filterAction: PropTypes.func.isRequired,
-    match: PropTypes.shape({}).isRequired
+    match: PropTypes.shape({}).isRequired,
   };
 
   state = emptyState;
@@ -140,11 +140,11 @@ class Filter extends Component {
             >
               <option value="">Select</option>
               {options.family_category
-              && options.family_category.map(o => (
-                <option key={o.id} value={o.id}>
-                  {o.name}
-                </option>
-              ))}
+                && options.family_category.map(o => (
+                  <option key={o.id} value={o.id}>
+                    {o.name}
+                  </option>
+                ))}
             </Form.Control>
           </Form.Group>
           <Form.Group className="form-group">
@@ -162,40 +162,35 @@ class Filter extends Component {
             >
               <option value="">Select</option>
               {options.sub_family_category
-              && options.sub_family_category.map(o => (
-                <option key={o.id} value={o.id}>
-                  {o.name}
-                </option>
-              ))}
+                && options.sub_family_category.map(o => (
+                  <option key={o.id} value={o.id}>
+                    {o.name}
+                  </option>
+                ))}
             </Form.Control>
           </Form.Group>
-          <Form.Group className="datepicker-wrapper col-6 pl-0 float-left">
+          <Form.Group className="datepicker-wrapper col-6 pl-0 float-left from-date">
             <Form.Label htmlFor="fromDate">From</Form.Label>
-            <Form.Control
-              name="fromDate"
-              type="date"
-              className="form-control"
-            />
+            <Form.Control name="fromDate" type="date" />
           </Form.Group>
-          <Form.Group className="datepicker-wrapper col-6 pr-0 float-right">
+          <Form.Group className="datepicker-wrapper col-6 pr-0 float-right to-date">
             <Form.Label htmlFor="toDate">To</Form.Label>
             <Form.Control
               type="date"
               name="toDate"
               id="toDate"
-              className="form-control"
             />
           </Form.Group>
           <div className="buttons-wrapper clearfix">
             <Button
               type="button"
-              className="custom-button apply"
+              className="custom-button btn-dark"
               onClick={this.filter}
             >
               Apply
             </Button>
             <Button
-              className="custom-button clear float-right"
+              className="custom-button btn-light float-right"
               type="button"
               onClick={this.reset}
             >

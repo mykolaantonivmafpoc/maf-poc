@@ -11,13 +11,22 @@
   border-left: 1px solid #dfdfdf;
 
   .custom-button {
+    text-align: center;
+    padding: 5px;
+    width: 47%;
     height: 40px;
-    outline: none;
     margin: 10px 0;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 1px;
-    text-transform: uppercase;
+
+    &.btn-dark {
+      margin-right: 5px;
+    }
+
+    &.btn-light {
+      margin-left: 5px;
+    }
 
     &:hover {
       cursor: pointer;
@@ -26,12 +35,6 @@
     &:focus {
       outline: none;
     }
-  }
-
-  .buttons-wrapper {
-    margin: 100px 0 20px;
-    max-height: 50px;
-    clear: both;
   }
 }
 
@@ -87,47 +90,41 @@
     color: #8d8d8d;
   }
 
-  /* Buttons */
-  .buttons-wrapper {
-    .custom-button.apply {
-      background: black;
-      color: white;
-      border: none;
-    }
-
-    .custom-button.apply:active {
-      background: white;
-      color: black;
-      border: 2px solid #dfdfdf;
-      outline: none;
-    }
-
-    .custom-button.clear {
-      background: white;
-      color: black;
-      border: 2px solid #dfdfdf;
-    }
-
-    .custom-button.clear:active {
-      background: black;
-      color: white;
-      border: none;
-      outline: none;
-    }
-
-    .custom-button.clear:active:focus,
-    .custom-button.apply:active:focus {
-      box-shadow: none;
-    }
-  }
-
   /* Date Picker */
-  .datepicker-wrapper input {
-    font-size: 12px;
+  .datepicker-wrapper {
+    &.from-date {
+      padding-right: 5px;
+    }
+
+    &.to-date {
+      padding-left: 5px;
+    }
+
+    input {
+      font-size: 10px;
+      padding: 4px;
+    }
   }
 
   [type='date'] {
     background: #fff url(./calendar.svg) 92% 50% no-repeat;
+    // background-size: 15px;
+    // background-position-x: 72px;
+  }
+
+  [type="date"]::-webkit-clear-button {
+    // display: none;
+    margin-right: 0;
+  }
+
+  /* Hide the cancel button */
+  [type='date']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  /* Hide the magnifying glass */
+  [type='date']::-webkit-search-results-button {
+    -webkit-appearance: none;
   }
 
   [type='date']::-webkit-inner-spin-button {
