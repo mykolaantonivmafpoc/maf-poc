@@ -3,6 +3,8 @@ import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { Route, MemoryRouter } from 'react-router-dom';
+import thunk from 'redux-thunk';
+import HATEOASApi from '../../middleware/HATEOASApi';
 
 import Campaign from './Campaign';
 
@@ -10,7 +12,7 @@ describe('Selected Campaign page', () => {
   let container;
   let component;
   let component_campaign;
-  const mockStore = configureStore();
+  const mockStore = configureStore([thunk, HATEOASApi]);
   const mock_campaignsArrLikeObj = {
     1: {
       campaign_type: 'NATIONAL',

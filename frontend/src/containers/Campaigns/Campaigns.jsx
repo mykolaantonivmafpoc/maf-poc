@@ -14,7 +14,8 @@ class Campaigns extends Component {
   static propTypes = {
     campaigns: PropTypes.arrayOf(PropTypes.shape([])),
     meta: PropTypes.shape({ type: PropTypes.string }),
-    history: PropTypes.shape({})
+    history: PropTypes.shape({}),
+    loadAllCampaigns: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -23,21 +24,14 @@ class Campaigns extends Component {
     history: {}
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { loadAllCampaigns: load, isFetchingOptions } = props;
-    if (isFetchingOptions !== state.isFetchingOptions) {
-      if (isFetchingOptions === false) {
-        load();
-      }
-      return { isFetchingOptions };
-    }
-
-    return null;
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
-  constructor() {
-    super();
-    this.state = {};
+  componentWillMount() {
+    const { loadAllCampaigns: load } = this.props;
+    load();
   }
 
   Campaign = ({ type, name, date }) => (
@@ -145,9 +139,6 @@ const mapStateToProps = (state) => {
       campaigns,
     },
     data: {
-      options: {
-        isFetching: isFetchingOptions
-      },
       campaignList: {
         content: campaignList,
         meta
@@ -157,8 +148,7 @@ const mapStateToProps = (state) => {
 
   return {
     campaigns: campaignList && campaignList.map(id => campaigns[id]),
-    meta,
-    isFetchingOptions
+    meta
   };
 };
 

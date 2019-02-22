@@ -9,7 +9,7 @@ import CampaignBubbleChart from '../../components/DataVisualization/CampaignBubb
 import SettingsPopup from '../../components/DataVisualization/SettingsPopup';
 import CampaignsListFilter from '../../components/Navigation/CampaignsListFilter';
 import DataGrid from '../../components/DataVisualization/DataGrid';
-import { loadAllCampaigns, loadCampaign } from '../../actions/campaignActions';
+import { loadCampaign } from '../../actions/campaignActions';
 import { productListTableDef } from '../../config';
 
 import './Campaign.scss';
@@ -22,7 +22,8 @@ class Campaign extends Component {
     match: PropTypes.shape({}).isRequired,
     campaigns: PropTypes.arrayOf(PropTypes.shape({})),
     campaignsPageTitle: PropTypes.string,
-    history: PropTypes.shape({}).isRequired
+    history: PropTypes.shape({}).isRequired,
+    loadCampaign: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -39,37 +40,21 @@ class Campaign extends Component {
     z: 'total_sales'
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const {
-      loadAllCampaigns: loadAll,
-      loadCampaign: loadSingle,
-      isFetchingOptions,
-      isFetchingList,
-      match,
-      campaign
-    } = props;
-
-    if (isFetchingList !== state.isFetchingList
-      || isFetchingOptions !== state.isFetchingOptions
-      || (campaign && campaign.id
-        && parseInt(campaign.id, 10) !== parseInt(match.params.id, 10)
-        && state.lastFetchedId !== match.params.id)
-    ) {
-      if (isFetchingOptions === false && isFetchingList === undefined) {
-        loadAll();
-      }
-      if (isFetchingList === false) {
-        loadSingle({}, match.params.id);
-      }
-      return { isFetchingOptions, isFetchingList, lastFetchedId: match.params.id };
-    }
-
-    return null;
-  }
-
   constructor(props) {
     super(props);
     this.setGraphAxes = this.setGraphAxes.bind(this);
+  }
+
+  componentWillMount() {
+    this.fetch();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { match: prevMatch } = prevProps;
+    const { match } = this.props;
+    if (prevMatch.params.id !== match.params.id) {
+      this.fetch();
+    }
   }
 
   setGraphAxes(coords) {
@@ -120,6 +105,11 @@ class Campaign extends Component {
     );
   }
 
+  fetch() {
+    const { loadCampaign: loadSingle, match } = this.props;
+    loadSingle({}, match.params.id);
+  }
+
   render() {
     const data = { ...productListTableDef, rows: this.genRows() };
     const { products, campaign, campaigns, campaignsPageTitle } = this.props;
@@ -153,11 +143,7 @@ const mapStateToProps = (state) => {
       products
     },
     data: {
-      options: {
-        isFetching: isFetchingOptions
-      },
       campaignList: {
-        isFetching: isFetchingList,
         content: cmapaignList,
         meta: compaignListMeta
       },
@@ -173,12 +159,9 @@ const mapStateToProps = (state) => {
     campaign: campaigns[meta],
     campaigns: cmapaignList && cmapaignList.map(id => campaigns[id]),
     campaignsPageTitle: compaignListMeta && compaignListMeta.type,
-    isFetchingList,
-    isFetchingOptions
   };
 };
 
 export default withRouter(connect(mapStateToProps, {
-  loadAllCampaigns,
   loadCampaign
 })(Campaign));

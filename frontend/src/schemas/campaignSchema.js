@@ -12,7 +12,7 @@ const campaignListItemSchema = new schema.Entity('campaigns', {
 }, {
   processStrategy: (campaign) => {
     const out = { ...campaign };
-    out[links].id = `compaign-${campaign.id}`;
+    out[links].id = `campaign-${campaign.id}`;
     return out;
   }
 });
@@ -44,3 +44,5 @@ export const campaignSchema = {
   }),
   content: [productListSchema]
 };
+campaignsListSchema.storePath = 'data.campaignList';
+campaignSchema.storePath = 'data.singleCampaign';

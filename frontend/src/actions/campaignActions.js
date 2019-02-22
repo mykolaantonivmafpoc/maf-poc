@@ -1,4 +1,5 @@
-import { CALL_API, packTypes } from '../middleware/hateoasApi';
+import { createAction, nestActions } from '../middleware/HATEOASApi';
+import { fetchRoot } from './HATEOASActions';
 import Schemas from '../schemas';
 
 import {
@@ -11,37 +12,43 @@ import {
   GETONE_FAILURE
 } from '../constants/campaignConstants';
 
-const fetchAll = filter => ({
-  [CALL_API]: {
-    types: packTypes(GETALL_REQUEST, GETALL_SUCCESS, GETALL_FAILURE),
+const fetchList = filter => {
+  return (createAction({
+    requestType: GETALL_REQUEST,
+    successType: GETALL_SUCCESS,
+    failureType: GETALL_FAILURE,
     endpoint: {
-      key: -1,
-      rel: 'Campaigns'
+      key: 'Campaigns'
     },
     schema: Schemas.CAMPAIGN_LIST,
-    filter
-  }
-});
-
-const fetchSingle = (endpoint, filter) => ({
-  [CALL_API]: {
-    types: packTypes(GETONE_REQUEST, GETONE_SUCCESS, GETONE_FAILURE),
-    schema: Schemas.CAMPAIGN,
-    endpoint,
-    filter
-  }
-});
-
-export const loadAllCampaigns = (filter) => (dispatch) => {
-  return dispatch(fetchAll(filter));
+    payload: filter
+  }));
 };
 
-export const loadCampaign = (filter, id) => (dispatch, getState) => {
-  const campaign = getState().entities.campaigns[id];
-  const links = '_links';
+const fetchSingle = ({ filter, endpoint }) => {
+  return (createAction({
+    requestType: GETONE_REQUEST,
+    successType: GETONE_SUCCESS,
+    failureType: GETONE_FAILURE,
+    endpoint,
+    schema: Schemas.CAMPAIGN,
+    payload: filter
+  }));
+};
 
-  return dispatch(fetchSingle({
-    key: campaign[links],
-    rel: 'self'
-  }, filter));
+const nestedList = (filter) => nestActions(fetchRoot, fetchList)({}, filter);
+const nestedSingle = (filter, endpoint) => nestActions(
+  nestedList,
+  fetchSingle
+)(filter, { filter, endpoint });
+
+export const loadAllCampaigns = (filter) => (dispatch) => {
+  return dispatch(nestedList(filter));
+};
+
+export const loadCampaign = (filter, id) => (dispatch) => {
+  // const campaign = getState().entities.campaigns[id];
+  // const links = '_links';
+
+  return dispatch(nestedSingle(filter, { key: `campaign-${id}`, rel: 'self' }));
 };

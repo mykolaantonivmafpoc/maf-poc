@@ -8,7 +8,6 @@ import FormCheck from 'react-bootstrap/FormCheck';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import optionsAction from '../../actions/HATEOASActions';
 
 import { authenticate } from '../../actions/userActions';
 
@@ -27,8 +26,7 @@ class Login extends Component {
         from: PropTypes.shape({})
       })
     }).isRequired,
-    authenticate: PropTypes.func.isRequired,
-    optionsAction: PropTypes.func.isRequired
+    authenticate: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -39,14 +37,6 @@ class Login extends Component {
     username: '',
     password: ''
   };
-
-  componentDidUpdate() {
-    const { login, optionsAction: options } = this.props;
-
-    if (login && login.authdata) {
-      options();
-    }
-  }
 
   login = (event) => {
     const { authenticate: auth } = this.props;
@@ -141,12 +131,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  authenticate,
-  optionsAction: () => (
-    dispatch => (
-      optionsAction(dispatch)
-    )
-  )
+  authenticate
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

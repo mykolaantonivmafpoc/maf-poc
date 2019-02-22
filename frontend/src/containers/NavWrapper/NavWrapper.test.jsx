@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 import { shape } from 'prop-types';
 import thunk from 'redux-thunk';
 
-import HATEOASApi from '../../middleware/hateoasApi';
+import HATEOASApi from '../../middleware/HATEOASApi';
 import NavWrapper from './NavWrapper';
 
 describe('NavWrapper Component', () => {

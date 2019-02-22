@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 import configureStore from 'redux-mock-store';
 
 import Login from './Login';
-import HATEOASApi from '../../middleware/hateoasApi';
+import HATEOASApi from '../../middleware/HATEOASApi';
 import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE

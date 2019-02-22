@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers/rootReducer';
-import HATEOASApi from '../middleware/hateoasApi';
+import HATEOASApi from '../middleware/HATEOASApi';
 
 const initialState = {
   // to append initial state

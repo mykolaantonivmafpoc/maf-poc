@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 import { Route, MemoryRouter } from 'react-router-dom';
 import thunk from 'redux-thunk';
 
-import HATEOASApi from '../../middleware/hateoasApi';
+import HATEOASApi from '../../middleware/HATEOASApi';
 import Campaigns from './Campaigns';
 
 describe('Campaigns Component', () => {

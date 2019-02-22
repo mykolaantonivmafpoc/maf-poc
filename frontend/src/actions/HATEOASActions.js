@@ -1,4 +1,4 @@
-import { CALL_API, packTypes } from '../middleware/hateoasApi';
+import { createAction } from '../middleware/HATEOASApi';
 import Schemas from '../schemas';
 import {
   API_PATH
@@ -9,14 +9,16 @@ import {
   GETOPTIONS_FAILURE
 } from '../constants/HATEOASConstants';
 
-const fetchAll = () => ({
-  [CALL_API]: {
-    types: packTypes(GETOPTIONS_REQUEST, GETOPTIONS_SUCCESS, GETOPTIONS_FAILURE),
+export const fetchRoot = () => {
+  return createAction({
+    requestType: GETOPTIONS_REQUEST,
+    successType: GETOPTIONS_SUCCESS,
+    failureType: GETOPTIONS_FAILURE,
     endpoint: API_PATH,
     schema: Schemas.OPTIONS_LIST
-  }
-});
+  });
+};
 
 export default (dispatch) => {
-  return dispatch(fetchAll());
+  return dispatch(fetchRoot());
 };
