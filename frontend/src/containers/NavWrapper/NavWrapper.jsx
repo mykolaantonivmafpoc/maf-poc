@@ -10,7 +10,7 @@ import { logout } from '../../actions/userActions';
 import Filter from '../../components/Navigation/Filter';
 import MainNav from '../../components/Navigation/MainNav';
 import MobileNav from '../../components/Navigation/MobileNav';
-import { routeByPath } from '../../config';
+import filterAction from '../../actions/filterActions';
 
 import './NavWrapper.scss';
 
@@ -23,18 +23,10 @@ const NavWrapper = ({
   showMainNav,
   removeMainNav,
   kpi_options,
-  loadCampaign: lc,
-  loadAllCampaigns: loadAll,
   logout: logoutFn,
-  match
+  filterAction: setFilter,
+  filter: flt
 }) => {
-  let filterAction = () => {};
-  const routeConf = routeByPath(match.path) || {};
-  if (routeConf.name === 'campaigns') {
-    filterAction = loadAll;
-  } else if (routeConf.name === 'campaign') {
-    filterAction = lc;
-  }
   return (
     <section>
       {navigation.navShown === undefined || navigation.navShown === true ? (
@@ -55,7 +47,14 @@ const NavWrapper = ({
         logout={logoutFn}
       />
       {navigation.filterShown
-        ? <Filter hideFilter={hideFilter} options={kpi_options} filterAction={filterAction}/>
+        ? (
+          <Filter
+            hideFilter={hideFilter}
+            filter={flt}
+            options={kpi_options}
+            filterAction={setFilter}
+          />
+        )
         : null}
       <section className="main-c">
         {children}
@@ -104,7 +103,8 @@ const mapStateToProps = state => {
       family_category,
       section,
       sub_family_category
-    }
+    },
+    filter
   } = state;
 
   return {
@@ -117,7 +117,8 @@ const mapStateToProps = state => {
       family_category,
       section,
       sub_family_category
-    })
+    }),
+    filter
   };
 };
 
@@ -135,17 +136,18 @@ NavWrapper.propTypes = {
   removeMainNav: PropTypes.func.isRequired,
   hideMainNav: PropTypes.func.isRequired,
   kpi_options: PropTypes.shape({}),
-  loadCampaign: PropTypes.func.isRequired,
-  loadAllCampaigns: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   match: PropTypes.shape({}).isRequired,
+  filterAction: PropTypes.func.isRequired,
+  filter: PropTypes.shape({})
 };
 
 NavWrapper.defaultProps = {
-  kpi_options: {}
+  kpi_options: {},
+  filter: {}
 };
 
 export default withRouter(connect(
   mapStateToProps,
-  { ...navigationActions, loadCampaign, loadAllCampaigns, logout }
+  { ...navigationActions, loadCampaign, loadAllCampaigns, logout, filterAction }
 )(NavWrapper));

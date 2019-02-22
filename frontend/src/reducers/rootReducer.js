@@ -1,6 +1,7 @@
 
 import { combineReducers } from 'redux';
 import login from './loginReducer';
+import filter from './filterReducer';
 import navigation from './navigationReducer';
 import curryReducers from './curryReducers';
 import entities from './entityReducer';
@@ -36,7 +37,8 @@ const rootReducer = combineReducers({
   }),
   entities,
   login,
-  navigation
+  navigation,
+  filter
 });
 
 export default rootReducer;

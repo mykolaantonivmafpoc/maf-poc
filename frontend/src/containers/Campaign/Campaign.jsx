@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
 
 import PageHeader from '../../components/Navigation/PageHeader';
 import NavWrapper from '../NavWrapper';
@@ -23,7 +24,8 @@ class Campaign extends Component {
     campaigns: PropTypes.arrayOf(PropTypes.shape({})),
     campaignsPageTitle: PropTypes.string,
     history: PropTypes.shape({}).isRequired,
-    loadCampaign: PropTypes.func.isRequired
+    loadCampaign: PropTypes.func.isRequired,
+    filter: PropTypes.shape({})
   };
 
   static defaultProps = {
@@ -31,7 +33,8 @@ class Campaign extends Component {
     products: [],
     campaign: {},
     campaigns: [],
-    campaignsPageTitle: 'Campaigns'
+    campaignsPageTitle: 'Campaigns',
+    filter: {}
   }
 
   state = {
@@ -50,9 +53,9 @@ class Campaign extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match: prevMatch } = prevProps;
-    const { match } = this.props;
-    if (prevMatch.params.id !== match.params.id) {
+    const { match: prevMatch, filter: prevfilter } = prevProps;
+    const { match, filter } = this.props;
+    if (prevMatch.params.id !== match.params.id || !isEqual(filter, prevfilter)) {
       this.fetch();
     }
   }
@@ -106,8 +109,8 @@ class Campaign extends Component {
   }
 
   fetch() {
-    const { loadCampaign: loadSingle, match } = this.props;
-    loadSingle({}, match.params.id);
+    const { loadCampaign: loadSingle, match, filter } = this.props;
+    loadSingle(filter, match.params.id);
   }
 
   render() {
@@ -151,7 +154,8 @@ const mapStateToProps = (state) => {
         content: productList,
         meta
       }
-    }
+    },
+    filter
   } = state;
 
   return {
@@ -159,6 +163,7 @@ const mapStateToProps = (state) => {
     campaign: campaigns[meta],
     campaigns: cmapaignList && cmapaignList.map(id => campaigns[id]),
     campaignsPageTitle: compaignListMeta && compaignListMeta.type,
+    filter
   };
 };
 

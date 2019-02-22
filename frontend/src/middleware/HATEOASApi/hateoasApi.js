@@ -60,13 +60,12 @@ export const getHATEOEUrl = (endpoint, store) => {
 };
 
 export const curryHandleAction = (store, next, orgAction) => async (unwrappedAction) => {
-  const { endpoint, schema, types, filter } = validateAction(unwrappedAction);
+  const { endpoint, schema, types, payload: filter } = validateAction(unwrappedAction);
   const url = getHATEOEUrl(endpoint, store.getState());
   const actionWith = curryActionWith(orgAction);
 
   const { requestType, successType, failureType } = types;
   next(actionWith({ type: requestType }));
-
   try {
     const response = await callApi(url, schema, 'get', filter);
     return next(actionWith({

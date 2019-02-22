@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
+
 import { loadAllCampaigns } from '../../actions/campaignActions';
 import DataGrid from '../../components/DataVisualization/DataGrid';
 import PageHeader from '../../components/Navigation/PageHeader';
@@ -15,13 +17,15 @@ class Campaigns extends Component {
     campaigns: PropTypes.arrayOf(PropTypes.shape([])),
     meta: PropTypes.shape({ type: PropTypes.string }),
     history: PropTypes.shape({}),
-    loadAllCampaigns: PropTypes.func.isRequired
+    loadAllCampaigns: PropTypes.func.isRequired,
+    filter: PropTypes.shape({})
   };
 
   static defaultProps = {
     meta: { type: 'Campaign' },
     campaigns: [],
-    history: {}
+    history: {},
+    filter: {}
   }
 
   constructor(props) {
@@ -30,8 +34,16 @@ class Campaigns extends Component {
   }
 
   componentWillMount() {
-    const { loadAllCampaigns: load } = this.props;
-    load();
+    this.fetch();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { filter: prevfilter } = prevProps;
+    const { filter } = this.props;
+
+    if (!isEqual(filter, prevfilter)) {
+      this.fetch();
+    }
   }
 
   Campaign = ({ type, name, date }) => (
@@ -54,6 +66,11 @@ class Campaigns extends Component {
         </div>
       </div>
     );
+  }
+
+  fetch() {
+    const { loadAllCampaigns: load, filter } = this.props;
+    load(filter);
   }
 
   genRows() {
@@ -143,12 +160,14 @@ const mapStateToProps = (state) => {
         content: campaignList,
         meta
       }
-    }
+    },
+    filter
   } = state;
 
   return {
     campaigns: campaignList && campaignList.map(id => campaigns[id]),
-    meta
+    meta,
+    filter
   };
 };
 

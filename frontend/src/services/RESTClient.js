@@ -42,7 +42,6 @@ class RestClient {
         throw JSON.parse(data) || data;
       }
     } catch (error) {
-      // console.log('API call error: ', error);
       out = error;
     }
     return out;
@@ -73,7 +72,6 @@ class RestClient {
 
       const reqOptions = Object.assign({ method }, this.defOptions, options);
 
-      // Add the Headers to the options
       reqOptions.headers = reqHeaders;
 
       // TODO: handle other response types

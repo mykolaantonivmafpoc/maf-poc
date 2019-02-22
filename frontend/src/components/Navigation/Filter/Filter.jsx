@@ -10,7 +10,7 @@ import filter from './filter.svg';
 
 const emptyState = {
   department: '',
-  family_categor: '',
+  family_category: '',
   section: '',
   sub_family_category: ''
 };
@@ -21,12 +21,19 @@ class Filter extends Component {
     options: PropTypes.shape({}).isRequired,
     filterAction: PropTypes.func.isRequired,
     match: PropTypes.shape({}).isRequired,
+    filter: PropTypes.shape({})
+  };
+
+  static defaultProps = {
+    filter: {}
   };
 
   state = emptyState;
 
   constructor(props) {
     super(props);
+    const { filter: flt } = props;
+    this.state = { ...emptyState, ...flt };
     this.reset = this.reset.bind(this);
     this.filter = this.filter.bind(this);
     this.setStateVal = this.setStateVal.bind(this);
@@ -40,12 +47,7 @@ class Filter extends Component {
   }
 
   filter() {
-    const {
-      filterAction,
-      match: {
-        params: { id }
-      }
-    } = this.props;
+    const { filterAction } = this.props;
     const filterObj = {};
     Object.keys(this.state).forEach(k => {
       const { [k]: param } = this.state;
@@ -53,11 +55,11 @@ class Filter extends Component {
         filterObj[k] = param;
       }
     });
-    filterAction(filterObj, id);
+    filterAction(filterObj);
   }
 
   reset() {
-    this.setState(emptyState);
+    this.setState(emptyState, this.filter);
   }
 
   render() {
