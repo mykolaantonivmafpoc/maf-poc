@@ -1,7 +1,9 @@
 import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import SearchableComboList from '../SearchableComboList/SearchableComboList';
+import { routeByName } from '../../../config';
 import './CampaignsListFilter.scss';
 
 class CampaignsListFilter extends React.Component {
@@ -30,6 +32,12 @@ class CampaignsListFilter extends React.Component {
     this.ref_Overlay.current.hide();
   }
 
+  itemWrapper = (content, id) => (
+    <Link to={routeByName('campaign').path.replace(':id', id)} className="list-group-item list-group-item-action">
+      {content}
+    </Link>
+  )
+
   render() {
     const { showPopover, target } = this.state;
     const { campaigns, selectedCampaignName } = this.props;
@@ -46,12 +54,16 @@ class CampaignsListFilter extends React.Component {
           overlay={(
             <Popover id="popover-contained">
               <div className="popover-wrapper">
-                <SearchableComboList data={campaigns}/>
+                <SearchableComboList
+                  data={campaigns}
+                  itemWrapper={this.itemWrapper}
+                  onItemSelected={this.closePopOver}
+                />
               </div>
             </Popover>
           )}
         >
-          <button className="filter-title" data-active={showPopover} type="button" onClick={this.onFilterClicked}>
+          <button className="filter-title" data-active={showPopover} type="button">
             {selectedCampaignName}
           </button>
         </OverlayTrigger>

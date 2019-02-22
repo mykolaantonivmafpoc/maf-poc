@@ -132,12 +132,25 @@ table.data-grid thead th {
 
 @media (min-width: $bp_phone + 1px) and (max-width: $bp_desktop_l - 1px) {
   .data-grid {
+    table-layout: auto;
+
     .table-header-groups {
-      display: block;
+      display: flex;
       position: sticky;
+      width: 1px;
       top: 0;
-      width: calc(100vw - 373px);
       background-color: #fff;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 70px;
+        width: calc(100vw - 373px);
+        background-color: #fff;
+        z-index: -1;
+      }
 
       th {
         display: inline-block;

@@ -1,9 +1,6 @@
 import React from 'react';
 import { InputGroup, FormControl, ListGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
-import { routeByName } from '../../../config';
 
 import './SearchableComboList.scss';
 
@@ -11,11 +8,15 @@ const DEBOUNCE_TIME = 200;
 
 class SearchableComboList extends React.Component {
   static propTypes = {
-    data: PropTypes.arrayOf(PropTypes.shape({}))
+    data: PropTypes.arrayOf(PropTypes.shape({})),
+    itemWrapper: PropTypes.func,
+    onItemSelected: PropTypes.func
   }
 
   static defaultProps = {
-    data: []
+    data: [],
+    itemWrapper: (content) => content,
+    onItemSelected: () => {}
   };
 
   constructor(props) {
@@ -40,8 +41,16 @@ class SearchableComboList extends React.Component {
     }, DEBOUNCE_TIME);
   }
 
+  onItemSelected = (e) => {
+    const { onItemSelected: parentFunc } = this.props;
+    const { id } = e.target.closest('.searchable-combo-item').dataset;
+
+    parentFunc(id);
+  }
+
   getAllOptions() {
     const { filteredOptions, selectedId } = this.state;
+    const { itemWrapper } = this.props;
     const optionsToShow = filteredOptions.map(
       (item) => {
         const isActive = {};
@@ -51,13 +60,15 @@ class SearchableComboList extends React.Component {
         }
 
         return (
-          <Link to={routeByName('campaign').path.replace(':id', item.id)} key={item.id} className="list-group-item list-group-item-action">{item.name}</Link>
+          <div className="searchable-combo-item" onClick={this.onItemSelected} key={item.id} data-id={item.id}>
+            {itemWrapper(item.name, item.id)}
+          </div>
         );
       }
     );
 
     return (
-      <ListGroup className="combo-list">
+      <ListGroup className="combo-list" >
         {optionsToShow}
       </ListGroup>
     );
@@ -81,7 +92,7 @@ class SearchableComboList extends React.Component {
 
     if (query) {
       conetnt = (
-        <button type="button" className="clear-button" onClick={this.onQueryCleared}>X</button>
+        <button type="button" className="clear-button" onClick={this.onQueryCleared}/>
       );
     } else {
       conetnt = (

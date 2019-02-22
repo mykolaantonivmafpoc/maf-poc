@@ -64,19 +64,19 @@ describe('DataGrid Component', () => {
   };
 
   it('getDataMeta - Should get correct metadata for data without groups', () => {
-    const shuldBe = { columnsIdNameMap: { ipsum: 'Ipsum', lorem: 'Lorem' }, columnsToGroupMap: false, groupsItemsCount: false };
+    const shuoldBe = { columnsIdNameMap: { ipsum: 'Ipsum', lorem: 'Lorem' }, columnsToGroupMap: false, groupsItemsCount: false };
     const grid = mount(<DataGrid data={mockDataNoGroups} className="campaigns-data-grid"/>);
     const result = grid.instance().getDataMeta(mockDataNoGroups);
 
-    expect(result).toEqual(shuldBe);
+    expect(result).toEqual(shuoldBe);
   });
 
   it('getDataMeta - Should get correct metadata for data with groups', () => {
-    const shuldBe = { groupsItemsCount: { group1: 2, group2: 1 }, columnsIdNameMap: { lorem: 'Lorem', ipsum: 'Ipsum', lipsum: 'Lipsum' }, columnsToGroupMap: { lorem: 'group1', ipsum: 'group1', lipsum: 'group2' } };
+    const shouldBe = { groupsItemsCount: { group1: 2, group2: 1 }, columnsIdNameMap: { lorem: 'Lorem', ipsum: 'Ipsum', lipsum: 'Lipsum' }, columnsToGroupMap: { lorem: 'group1', ipsum: 'group1', lipsum: 'group2' } };
     const grid = mount(<DataGrid data={mockDataWithGroups} className="campaigns-data-grid"/>);
     const result = grid.instance().getDataMeta(mockDataWithGroups);
 
-    expect(result).toEqual(shuldBe);
+    expect(result).toEqual(shouldBe);
   });
 
   it('Should change tabs', () => {

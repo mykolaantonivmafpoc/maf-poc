@@ -66,6 +66,10 @@
       padding-left: 30px;
     }
 
+    [data-section] {
+      width: auto;
+    }
+
     td[data-section="general"],
     table[data-selected="promo"] tbody [data-section="promo"],
     table[data-selected="price"] tbody [data-section="price"],
@@ -82,7 +86,7 @@
 
     td[data-section="general"],
     .table-columns-header th[data-section="general"] {
-      width: 10%;
+      width: 150px;
     }
 
     .table-header-groups th[data-section="general"] + th {

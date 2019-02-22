@@ -16,33 +16,47 @@ class MobileNav extends Component {
     hideMainNav: PropTypes.func.isRequired
   };
 
+  DEBOUNCE_TIME = 200;
+
   constructor() {
     super();
     this.window = window;
   }
 
   componentWillMount() {
-    const { showFitler, hideFilter, hideMainNav, removeMainNav } = this.props;
+    const width = this.window.innerWidth;
+    this.onWindowResize(width);
+    this.window.onresize = (event) => {
+      const windowWidth = event.target.innerWidth;
 
-    if (this.window.innerWidth < 1024) {
-      hideFilter();
-      removeMainNav();
-    }
-
-    this.window.onresize = event => {
-      if (event.target.innerWidth <= 1024) {
-        hideFilter();
-        removeMainNav();
-      } else {
-        showFitler();
-        hideMainNav();
-      }
+      this.debounceWindowResize(windowWidth, this.onWindowResize);
     };
   }
 
   componentWillUnmount() {
     this.window.onresize = null;
   }
+
+  debounceWindowResize = (windowWidth, callBack) => {
+    clearTimeout(this.debounceTimeOut);
+
+    this.debounceTimeOut = setTimeout(() => {
+      this.debounceTimeOut = 0;
+      callBack(windowWidth);
+    }, this.DEBOUNCE_TIME);
+  }
+
+  onWindowResize = windowWidth => {
+    const { showFitler, hideMainNav, hideFilter, removeMainNav } = this.props;
+
+    if (windowWidth <= 1024) {
+      hideFilter();
+      removeMainNav();
+    } else {
+      showFitler();
+      hideMainNav();
+    }
+  };
 
   render() {
     const { showFitler, showMainNav } = this.props;

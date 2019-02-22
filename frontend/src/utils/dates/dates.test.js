@@ -8,7 +8,7 @@ describe('Format data in the the format DD/MM/YY', () => {
     expect(formatedDate).toBe('19/2/19');
   });
 
-  it('On wrong parameters shuld return empty string', () => {
+  it('On wrong parameters should return empty string', () => {
     const formatedDate = formatDate(null);
     expect(formatedDate).toBe('');
   });

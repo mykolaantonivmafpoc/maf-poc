@@ -77,7 +77,7 @@ describe('DataGrid Component', () => {
     expect(chart.find('#chartWrapper')).toHaveLength(1);
   });
 
-  it('Shuld generate correct data object', () => {
+  it('Should generate correct data object', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
@@ -87,7 +87,7 @@ describe('DataGrid Component', () => {
     expect(resultObj).toEqual(parsedData);
   });
 
-  it('Shuld render chart', () => {
+  it('Should render chart', () => {
     const container = document.createElement('div');
     container.id = 'targetId';
     document.body.appendChild(container);

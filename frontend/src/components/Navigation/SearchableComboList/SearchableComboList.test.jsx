@@ -13,36 +13,94 @@ describe('Searchable Combo List Component', () => {
   ];
 
   it('should render the form without throwing an error', () => {
-    const wrapper = mount(<MemoryRouter><Route><SearchableComboList /></Route></MemoryRouter>);
-    expect(wrapper.find('.searchable-combo-list')).toBeTruthy();
+    const wrapper = mount(
+      <MemoryRouter>
+        <Route>
+          <SearchableComboList />
+        </Route>
+      </MemoryRouter>
+    );
+    expect(wrapper.find('.searchable-combo-list')).toHaveLength(1);
   });
 
   it('onQueryCleared called, should show all items', () => {
-    const comboList = mount(
+    const wrapper = mount(
       <MemoryRouter>
         <Route>
           <SearchableComboList data={mockData}/>
         </Route>
       </MemoryRouter>
     );
-    comboList.find(SearchableComboList).instance().onQueryCleared();
+    const comboList = wrapper.find('SearchableComboList');
+    comboList.instance().onQueryCleared();
     comboList.update();
 
-    expect(comboList.find('.combo-list a')).toHaveLength(4);
+    expect(comboList.find('.searchable-combo-item')).toHaveLength(4);
   });
 
-  it('Shuld filter correctly on query change', () => {
-    const comboList = mount(
+  it('Should filter correctly on query change', () => {
+    const wrapper = mount(
       <MemoryRouter>
         <Route>
           <SearchableComboList data={mockData}/>
         </Route>
       </MemoryRouter>
     );
+    const comboList = wrapper.find('SearchableComboList');
+    comboList.instance().filterListByQuery('onth');
+    wrapper.update();
 
-    comboList.find(SearchableComboList).instance().filterListByQuery('onth');
-    comboList.update();
+    expect(wrapper.find('.searchable-combo-item')).toHaveLength(1);
+  });
 
-    expect(comboList.find('.combo-list a')).toHaveLength(1);
+  it('Should wrapp elements in passed template', () => {
+    const wrapper = mount(
+      <MemoryRouter>
+        <Route>
+          <SearchableComboList
+            data={mockData}
+            itemWrapper={
+              (content, id) => (
+                <div className="testMeClass" id={id}>
+                  {content}
+                </div>
+              )
+            }
+          />
+        </Route>
+      </MemoryRouter>
+    );
+    const comboList = wrapper.find('SearchableComboList');
+    expect(comboList.find('.testMeClass')).toHaveLength(4);
+    expect(comboList.find({ id: 2 })).toHaveLength(1);
+  });
+
+  it('Should return correct id on item select', () => {
+    let returnedId = 0;
+    const wrapper = mount(
+      <MemoryRouter>
+        <Route>
+          <SearchableComboList
+            data={mockData}
+            onItemSelected={(id) => { returnedId = id; }}
+          />
+        </Route>
+      </MemoryRouter>
+    );
+
+    const comboList = wrapper.find('SearchableComboList');
+    comboList.instance().onItemSelected(
+      {
+        target: {
+          closest: () => ({
+            dataset: {
+              id: 2
+            }
+          })
+        }
+      }
+    );
+
+    expect(returnedId).toBe(2);
   });
 });
