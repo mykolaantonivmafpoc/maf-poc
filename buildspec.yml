@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.7
+      
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+  
+  build:
+    commands:
+      - echo Setup poetry
+      - pip install poetry
+      - echo Install dependencies
+      - make install
+      - echo Lint all code
+      - make lint
+      - echo Unit Tests and coverage
+      - echo Bring up all docker containers and test network reachability
+      - docker-compose up --build -d
+      - docker run --network container:api appropriate/curl \
+              -s --retry 10 --retry-delay 1 --retry-connrefused http://localhost:80/
+      - docker run --network container:static appropriate/curl \
+              -s --retry 10 --retry-delay 1 --retry-connrefused http://localhost:80/
+      - docker run --network container:db appropriate/nc \
+              -z -v -w 10 localhost 5432
+      - make test-integration
+      - docker build -t $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION -f docker/Dockerfile.api .
+      - echo Tag Docker image
+      - docker tag $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
